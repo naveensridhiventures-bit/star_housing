@@ -17,10 +17,10 @@ export default function LiveStats({ properties }) {
     prices.length > 1 && { v: `${inrShort(Math.min(...prices))} – ${inrShort(Math.max(...prices))}`, l: "price range" },
   ].filter(Boolean);
   return (
-    <div ref={ref} className="mt-8 rounded-3xl bg-ink-dark text-white grid divide-x divide-white/10 py-5 shadow-[0_18px_36px_-20px_rgba(6,23,52,0.8)]" style={{ gridTemplateColumns: `repeat(${cells.length}, minmax(0, 1fr))` }}>
+    <div ref={ref} className="mt-8 rounded-3xl bg-ink-dark text-white grid divide-x divide-white/10 py-5 shadow-[0_18px_36px_-20px_rgba(3,30,35,0.8)]" style={{ gridTemplateColumns: `repeat(${cells.length}, minmax(0, 1fr))` }}>
       {cells.map((c, i) => (
         <div key={i} className="px-3 text-center">
-          <p className="font-display font-bold text-[1.35rem] sm:text-[2rem] leading-none text-[#FFD36B] tabular-nums">{c.v}</p>
+          <p className="font-display font-bold text-[1.35rem] sm:text-[2rem] leading-none text-[#FF9DB9] tabular-nums">{c.v}</p>
           <p className="mt-2 text-[12px] sm:text-[13.5px] text-white/60">{c.l}</p>
         </div>
       ))}

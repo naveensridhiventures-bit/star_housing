@@ -33,7 +33,7 @@ export default function VisitSheet({ listing, onClose }) {
   const message = `Hi, I'd like to visit this property: ${listing.title}${listing.location ? ` (${listing.location})` : ""}${listing.price ? ` — ${listing.price}` : ""}${listing.refId ? `\nRef: ${listing.refId}` : ""}\n\nPreferred time: ${chosen.long}, ${slot}${name.trim() ? `\nName: ${name.trim()}` : ""}\n\nPlease confirm if this works.`;
 
   const pill = (on) =>
-    `rip rounded-2xl border-2 text-center transition-[background-color,transform] active:scale-95 ${on ? "pill-pick border-[#F5B21B] bg-[#FFF1CC] text-ink" : "border-transparent bg-[#E8F0FB] text-ink/75 hover:bg-[#E3ECFA]"}`;
+    `rip rounded-2xl border-2 text-center transition-[background-color,transform] active:scale-95 ${on ? "pill-pick border-[#FF5C8A] bg-[#FFE0EA] text-ink" : "border-transparent bg-[#E3F1EC] text-ink/75 hover:bg-[#DCEBE4]"}`;
 
   const when = `${chosen.dow === "Today" || chosen.dow === "Tomorrow" ? chosen.dow : `${chosen.dow} ${chosen.num} ${chosen.mon}`}, ${slot}`;
 
@@ -83,7 +83,7 @@ export default function VisitSheet({ listing, onClose }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="So we know who to expect"
-          className="mt-2 w-full h-12 rounded-2xl border border-ink/10 bg-white px-4 text-[15px] outline-none focus:border-[#9A6F06] focus:shadow-[0_0_0_3px_rgba(154,111,6,0.18)]"
+          className="mt-2 w-full h-12 rounded-2xl border border-ink/10 bg-white px-4 text-[15px] outline-none focus:border-[#C0185A] focus:shadow-[0_0_0_3px_rgba(192,24,90,0.18)]"
         />
       </label>
 
@@ -92,7 +92,7 @@ export default function VisitSheet({ listing, onClose }) {
         target="_blank"
         rel="noreferrer"
         onClick={() => setSent(true)}
-        className="rip btn-shine mt-6 h-14 rounded-2xl bg-gradient-to-br from-gold-light via-gold to-[#E39A05] hover:brightness-105 text-ink-dark font-semibold text-[15px] flex items-center justify-center gap-2 active:scale-[0.98] transition"
+        className="rip btn-shine mt-6 h-14 rounded-2xl bg-gradient-to-br from-gold-light via-gold to-[#E8336D] hover:brightness-105 text-ink-dark font-semibold text-[15px] flex items-center justify-center gap-2 active:scale-[0.98] transition"
       >
         <MessageCircle size={19} /> Request {when}
       </a>

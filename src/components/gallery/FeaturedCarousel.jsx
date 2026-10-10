@@ -110,7 +110,7 @@ export default function FeaturedCarousel({ items, interval = 5200 }) {
     <div ref={rootRef} className="featured-wrap">
       <div
         ref={tiltRef}
-        className="featured-card relative isolate overflow-hidden rounded-3xl w-full bg-ink-dark aspect-[16/11] sm:aspect-[21/9] sm:max-h-[26rem] shadow-[0_18px_40px_-18px_rgba(6,23,52,0.65)]"
+        className="featured-card relative isolate overflow-hidden rounded-3xl w-full bg-ink-dark aspect-[16/11] sm:aspect-[21/9] sm:max-h-[26rem] shadow-[0_18px_40px_-18px_rgba(3,30,35,0.65)]"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -173,7 +173,7 @@ export default function FeaturedCarousel({ items, interval = 5200 }) {
                 {active.location}
               </span>
             )}
-            {active.price && <span className="font-display font-bold text-[#FFD36B]">{active.price}</span>}
+            {active.price && <span className="font-display font-bold text-[#FF9DB9]">{active.price}</span>}
           </p>
         </div>
 

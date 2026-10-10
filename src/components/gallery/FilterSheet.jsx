@@ -6,7 +6,7 @@ import CountUp from "./CountUp";
 import { iconForType } from "./typeIcons";
 import { shortType, PRICE_STEPS, SQFT_STEPS, FACINGS, DEFAULT_FILTERS } from "../../lib/gallery";
 
-const GOLD = "#9A6F06";
+const GOLD = "#C0185A";
 
 /**
  * Full-height "Filters" sheet (bottom sheet on phones, centred panel on
@@ -78,10 +78,10 @@ export default function FilterSheet({ filters, onChange, types, areas, resultCou
                     onClick={() => set({ type: on ? "All" : t })}
                     aria-pressed={on}
                     className={`min-h-[3.6rem] rounded-2xl border-2 px-3 py-2 flex items-center gap-2.5 text-left text-[13px] font-semibold leading-tight transition-colors ${
-                      on ? "border-[#F5B21B] bg-[#FFF1CC] text-ink" : "border-transparent bg-[#E8F0FB] text-ink/80 hover:bg-[#E3ECFA]"
+                      on ? "border-[#FF5C8A] bg-[#FFE0EA] text-ink" : "border-transparent bg-[#E3F1EC] text-ink/80 hover:bg-[#DCEBE4]"
                     }`}
                   >
-                    <Icon size={24} strokeWidth={1.6} className={on ? "text-[#7A5805]" : "text-ink/60"} />
+                    <Icon size={24} strokeWidth={1.6} className={on ? "text-[#9D1148]" : "text-ink/60"} />
                     {shortType(t)}
                   </button>
                 );
@@ -99,7 +99,7 @@ export default function FilterSheet({ filters, onChange, types, areas, resultCou
                   aria-labelledby="f-loc"
                   value={filters.area}
                   onChange={(e) => set({ area: e.target.value })}
-                  className="w-full h-12 appearance-none rounded-2xl border border-ink/10 bg-white pl-10 pr-10 text-[15px] text-ink outline-none focus:border-[#F5B21B]"
+                  className="w-full h-12 appearance-none rounded-2xl border border-ink/10 bg-white pl-10 pr-10 text-[15px] text-ink outline-none focus:border-[#FF5C8A]"
                 >
                   <option value="All">All areas</option>
                   {areas.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -155,7 +155,7 @@ export default function FilterSheet({ filters, onChange, types, areas, resultCou
                     onClick={() => set({ facing: f })}
                     aria-pressed={on}
                     className={`h-10 min-w-[3.6rem] px-4 rounded-xl text-[13px] font-semibold transition-colors ${
-                      on ? "bg-ink text-white" : "bg-[#E8F0FB] text-ink/75 hover:bg-[#E3ECFA]"
+                      on ? "bg-ink text-white" : "bg-[#E3F1EC] text-ink/75 hover:bg-[#DCEBE4]"
                     }`}
                   >
                     {f}

@@ -107,7 +107,7 @@ export function WhatsAppMenu({ role, lead, adminName, compact = false }) {
         </button>
       </div>
       {open && (
-        <div className="absolute z-30 left-0 right-0 mt-2 min-w-[15rem] rounded-2xl bg-surface border border-ink/10 shadow-[0_18px_40px_-12px_rgba(11,37,89,0.35)] p-1.5 star-pop">
+        <div className="absolute z-30 left-0 right-0 mt-2 min-w-[15rem] rounded-2xl bg-surface border border-ink/10 shadow-[0_18px_40px_-12px_rgba(7,50,58,0.35)] p-1.5 star-pop">
           {templates.map((t) => (
             <a
               key={t.id}

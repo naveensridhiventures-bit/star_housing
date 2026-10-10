@@ -1,30 +1,28 @@
 import { Link } from "react-router-dom";
 import Logo from "../Logo";
+import TileStrip from "../TileStrip";
 import { APP_NAME } from "../../lib/config";
 
 /**
- * The navy brand bar shown at the top of every registration screen: the Star
- * Housing mark plus the name, with a thin gold rule underneath. The `color`
- * prop (the current step colour) tints the rule so each step still feels
- * different. Tapping it always goes home.
+ * Top bar of every registration screen: the Star Housing mark on peacock ink,
+ * with a strip of floor tile along the bottom. Tapping it always goes home.
+ * (`color` is the current step colour; it now tints the bar's bottom edge.)
  */
-export default function BrandHeader({ color = "#F5B21B", right = null, wide = false, className = "" }) {
+export default function BrandHeader({ color = "#FF5C8A", right = null, wide = false, className = "" }) {
   return (
-    <header className={`relative bg-gradient-to-br from-navy-dark via-navy to-navy-light rounded-b-[1.75rem] overflow-hidden ${className}`}>
-      <div className="absolute inset-x-0 bottom-0 h-[3px] transition-colors duration-300" style={{ background: `linear-gradient(90deg, ${color}, #FFD36B 50%, ${color})` }} aria-hidden="true" />
+    <header className={`relative bg-ink ${className}`}>
       <div
-        className={`mx-auto flex items-center justify-between gap-3 px-5 pb-5 ${wide ? "max-w-6xl" : ""}`}
-        style={{ paddingTop: "max(1.1rem, env(safe-area-inset-top))" }}
+        className={`mx-auto flex items-center justify-between gap-3 px-5 pb-4 ${wide ? "max-w-6xl" : ""}`}
+        style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
       >
-        <Link to="/" className="flex items-center gap-3" aria-label={`${APP_NAME} — home`}>
-          <Logo size={44} tone="light" />
-          <span className="leading-none">
-            <span className="block font-display font-extrabold text-[15px] tracking-tight text-white uppercase">{APP_NAME}</span>
-            <span className="block text-[9px] font-bold tracking-[0.22em] uppercase text-gold mt-1">Your dream • Our priority</span>
-          </span>
+        <Link to="/" className="flex items-center gap-3" aria-label={`${APP_NAME} home`}>
+          <Logo size={42} tone="light" />
+          <span className="font-display font-extrabold text-[1.2rem] leading-none text-white">{APP_NAME}</span>
         </Link>
         {right}
       </div>
+      <TileStrip kind="corners" palette="ink" size={16} />
+      <span className="absolute inset-x-0 bottom-0 h-[3px] transition-colors duration-300" style={{ background: color }} aria-hidden="true" />
     </header>
   );
 }

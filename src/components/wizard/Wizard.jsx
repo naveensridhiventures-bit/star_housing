@@ -223,7 +223,7 @@ export default function Wizard({
   return (
     <div className="min-h-screen bg-canvas sm:py-8">
       <div
-        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E8F0FB] sm:shadow-[0_28px_60px_-24px_rgba(11,37,89,0.35)] flex flex-col overflow-x-clip"
+        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E3F1EC] sm:shadow-[0_28px_60px_-24px_rgba(7,50,58,0.35)] flex flex-col overflow-x-clip"
         style={{ "--accent": color }}
       >
         <BrandHeader color={color} className="sm:rounded-t-[2rem]" />
@@ -269,8 +269,8 @@ export default function Wizard({
                 <p className="mt-3 text-[14.5px] text-ink/60 leading-relaxed max-w-xs">{success.text(form)}</p>
 
                 {chipList.length > 0 && (
-                  <div className="receipt-in mt-6 w-full rounded-3xl bg-[#F5F8FE] ring-1 ring-ink/[0.06] p-4 text-left">
-                    <p className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink/55"><ShieldCheck size={14} className="text-[#0F766E]" /> What we received</p>
+                  <div className="receipt-in mt-6 w-full rounded-3xl bg-[#F2F8F5] ring-1 ring-ink/[0.06] p-4 text-left">
+                    <p className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink/55"><ShieldCheck size={14} className="text-[#0B6B66]" /> What we received</p>
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {chipList.map((c) => <span key={c} className="text-[12.5px] font-semibold rounded-full px-3 py-1 bg-white ring-1 ring-ink/[0.08] text-ink/75">{c}</span>)}
                     </div>
@@ -328,8 +328,8 @@ export default function Wizard({
                 {atLanding && (
                   <div className="mt-6 space-y-3 stagger">
                     {draft && (
-                      <div className="welcome-in rounded-2xl bg-[#FFF4D6] ring-1 ring-[#F5B21B]/40 p-4">
-                        <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><RotateCcw size={16} className="text-[#9A6F06]" /> Welcome back{draft.form.name ? `, ${draft.form.name.trim().split(" ")[0]}` : ""}</p>
+                      <div className="welcome-in rounded-2xl bg-[#FFE6EE] ring-1 ring-[#FF5C8A]/40 p-4">
+                        <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><RotateCcw size={16} className="text-[#C0185A]" /> Welcome back{draft.form.name ? `, ${draft.form.name.trim().split(" ")[0]}` : ""}</p>
                         <p className="text-[13.5px] text-ink/60 mt-1">You have an unfinished form on this device. Pick up where you left off?</p>
                         <div className="mt-3 flex gap-2.5">
                           <button type="button" onClick={resume} className="rip h-11 flex-1 rounded-full bg-ink text-white text-[14px] font-bold active:scale-[0.98] transition-transform">Continue</button>

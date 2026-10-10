@@ -26,8 +26,8 @@ export default function CompareSheet({ items, onClose }) {
           <div key={r.label} className="grid gap-x-2 py-2.5 border-t border-ink/[0.07] items-center" style={cols}>
             <span className="text-[10.5px] font-bold uppercase tracking-wider text-ink/45">{r.label}</span>
             {r.cells.map((c, i) => (
-              <span key={i} className={`text-[12.5px] sm:text-[13.5px] leading-snug min-w-0 break-words rounded-lg px-1.5 py-1 ${r.best === i ? "bg-[#FFF4D6] text-[#7A5805] font-bold" : "text-ink/80 font-medium"}`}>
-                {r.best === i && <Trophy size={11} className="inline -mt-0.5 mr-1 text-[#9A6F06]" />}
+              <span key={i} className={`text-[12.5px] sm:text-[13.5px] leading-snug min-w-0 break-words rounded-lg px-1.5 py-1 ${r.best === i ? "bg-[#FFE6EE] text-[#9D1148] font-bold" : "text-ink/80 font-medium"}`}>
+                {r.best === i && <Trophy size={11} className="inline -mt-0.5 mr-1 text-[#C0185A]" />}
                 {c}
               </span>
             ))}

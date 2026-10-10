@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { uploadImage } from "../lib/cloudinary";
 
-export default function ImageUploader({ onUploaded, accentColor = "#0B2559" }) {
+export default function ImageUploader({ onUploaded, accentColor = "#07323A" }) {
   const inputRef = useRef(null);
   const [preview, setPreview] = useState(null);
   const [progress, setProgress] = useState(null);

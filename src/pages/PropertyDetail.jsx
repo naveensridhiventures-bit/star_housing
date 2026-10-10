@@ -21,7 +21,7 @@ import CollectionRail from "../components/gallery/CollectionRail";
 
 const heroBtn =
   "relative pointer-events-auto w-10 h-10 rounded-full bg-ink-dark/55 text-white flex items-center justify-center hover:bg-ink-dark/75 transition-colors active:scale-95";
-const GOLD_BTN = "bg-gradient-to-br from-gold-light via-gold to-[#E39A05] hover:brightness-105 text-ink-dark";
+const GOLD_BTN = "bg-gradient-to-br from-gold-light via-gold to-[#E8336D] hover:brightness-105 text-ink-dark";
 
 function PageShell({ children }) {
   return <div className="min-h-screen bg-canvas flex flex-col">{children}</div>;
@@ -172,7 +172,7 @@ export default function PropertyDetail() {
           <h1 className="fade-up font-display font-bold text-[1.55rem] sm:text-3xl leading-tight text-ink">{l.title}</h1>
           {l.location && (
             <p className="fade-up mt-1.5 flex items-center gap-1.5 text-[14.5px] text-ink/60" style={{ "--d": "80ms" }}>
-              <MapPin size={15} className="shrink-0 text-[#9A6F06]" />
+              <MapPin size={15} className="shrink-0 text-[#C0185A]" />
               {l.location}
             </p>
           )}
@@ -184,7 +184,7 @@ export default function PropertyDetail() {
           </div>
           {(emiMonthly > 0 || ago) && (
             <p className="fade-up mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-ink/55" style={{ "--d": "200ms" }}>
-              {emiMonthly > 0 && <a href="#emi" className="font-semibold text-[#7A5805] underline underline-offset-2">EMI from {inr(emiMonthly)}/mo</a>}
+              {emiMonthly > 0 && <a href="#emi" className="font-semibold text-[#9D1148] underline underline-offset-2">EMI from {inr(emiMonthly)}/mo</a>}
               {ago && !l.sold && <span className="flex items-center gap-1"><Clock size={13} />{ago}</span>}
             </p>
           )}
@@ -229,21 +229,21 @@ export default function PropertyDetail() {
           <div className="mt-6 grid gap-2.5">
             {count > 0 && (
               <Link to={`/gallery/${l.id}/photos`} className="flex items-center gap-3 rounded-2xl bg-surface ring-1 ring-ink/[0.07] px-4 py-3.5 hover:ring-ink/20 transition">
-                <Images size={20} className="text-[#9A6F06]" />
+                <Images size={20} className="text-[#C0185A]" />
                 <span className="flex-1 text-[14.5px] font-semibold text-ink">All photos ({count})</span>
                 <ChevronRight size={18} className="text-ink/40" />
               </Link>
             )}
             {l.location && (
               <Link to={`/gallery/${l.id}/photos?tab=location`} className="flex items-center gap-3 rounded-2xl bg-surface ring-1 ring-ink/[0.07] px-4 py-3.5 hover:ring-ink/20 transition">
-                <MapPin size={20} className="text-[#9A6F06]" />
+                <MapPin size={20} className="text-[#C0185A]" />
                 <span className="flex-1 text-[14.5px] font-semibold text-ink">Location &amp; map</span>
                 <ChevronRight size={18} className="text-ink/40" />
               </Link>
             )}
             {!l.sold && (
               <Link to={`/gallery/${l.id}/enquiry`} className="flex items-center gap-3 rounded-2xl bg-surface ring-1 ring-ink/[0.07] px-4 py-3.5 hover:ring-ink/20 transition">
-                <Send size={20} className="text-[#9A6F06]" />
+                <Send size={20} className="text-[#C0185A]" />
                 <span className="flex-1 text-[14.5px] font-semibold text-ink">Send an enquiry</span>
                 <ChevronRight size={18} className="text-ink/40" />
               </Link>
@@ -269,7 +269,7 @@ export default function PropertyDetail() {
                 <Phone size={19} />
                 <span className="hidden min-[400px]:inline">Call</span>
               </a>
-              <button type="button" onClick={() => setVisitOpen(true)} className={`rip btn-shine h-14 rounded-2xl ${GOLD_BTN} font-semibold text-[15px] flex items-center justify-center gap-2 active:scale-[0.98] transition-[transform,background-color] shadow-[0_8px_20px_-8px_rgba(154,111,6,0.8)]`}>
+              <button type="button" onClick={() => setVisitOpen(true)} className={`rip btn-shine h-14 rounded-2xl ${GOLD_BTN} font-semibold text-[15px] flex items-center justify-center gap-2 active:scale-[0.98] transition-[transform,background-color] shadow-[0_8px_20px_-8px_rgba(192,24,90,0.8)]`}>
                 <CalendarCheck size={19} />
                 Book a visit
               </button>

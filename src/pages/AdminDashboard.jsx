@@ -145,7 +145,7 @@ const CRM_CONFIG = {
 };
 
 const TABS = [
-  { key: "overview", label: "Overview", color: "#F5B21B" },
+  { key: "overview", label: "Overview", color: "#FF5C8A" },
   { key: "today", label: "Today", color: "#DC2626" },
   { key: "seller", label: "Sellers", color: COLORS.teal },
   { key: "buyer", label: "Buyers", color: COLORS.coral },

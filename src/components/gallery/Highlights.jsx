@@ -6,10 +6,10 @@ export default function Highlights({ items }) {
       {items.map(({ icon: Icon, text }, i) => (
         <li
           key={text}
-          className="fade-up flex items-center gap-1.5 rounded-full bg-[#FFF4D6] text-[#7A5805] ring-1 ring-[#F5B21B]/30 pl-2.5 pr-3 py-1.5 text-[12.5px] font-semibold"
+          className="fade-up flex items-center gap-1.5 rounded-full bg-[#FFE6EE] text-[#9D1148] ring-1 ring-[#FF5C8A]/30 pl-2.5 pr-3 py-1.5 text-[12.5px] font-semibold"
           style={{ "--d": `${200 + i * 70}ms` }}
         >
-          <Icon size={14} className="text-[#9A6F06]" />
+          <Icon size={14} className="text-[#C0185A]" />
           {text}
         </li>
       ))}

@@ -37,7 +37,7 @@ function Chip({ active, onClick, icon: Icon, children, count, delay = 0 }) {
       data-active={active}
       style={{ "--d": `${delay}ms` }}
       className={`rip chip enter-up shrink-0 h-12 pl-3.5 pr-4 rounded-2xl flex items-center gap-2 text-[14px] font-semibold transition-colors active:scale-95 ${
-        active ? "bg-ink text-white" : "bg-[#E8F0FB] text-ink/80 hover:bg-[#D7E3F7]"
+        active ? "bg-ink text-white" : "bg-[#E3F1EC] text-ink/80 hover:bg-[#CFE3DA]"
       }`}
     >
       <Icon size={20} strokeWidth={1.8} className="chip-ico shrink-0" fill={active && Icon === Heart ? "currentColor" : "none"} />
@@ -202,7 +202,7 @@ export default function Gallery() {
             className={headerBtnCls}
           >
             {searchOpen ? <X size={21} /> : <Search size={21} />}
-            {!searchOpen && (query.trim() || filterCount > 0) && <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#FFD36B]" />}
+            {!searchOpen && (query.trim() || filterCount > 0) && <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#FF9DB9]" />}
           </button>
         }
       />
@@ -216,7 +216,7 @@ export default function Gallery() {
               <input
                 autoFocus={searchOpen}
                 tabIndex={searchOpen ? 0 : -1}
-                className="w-full h-12 rounded-2xl border border-ink/10 bg-surface pl-11 pr-11 text-[15px] text-ink placeholder:text-ink/40 outline-none focus:border-[#9A6F06] focus:shadow-[0_0_0_3px_rgba(154,111,6,0.18)] transition"
+                className="w-full h-12 rounded-2xl border border-ink/10 bg-surface pl-11 pr-11 text-[15px] text-ink placeholder:text-ink/40 outline-none focus:border-[#C0185A] focus:shadow-[0_0_0_3px_rgba(192,24,90,0.18)] transition"
                 placeholder="Search by title, area or type"
                 aria-label="Search listings"
                 value={query}
@@ -242,7 +242,7 @@ export default function Gallery() {
             >
               <SlidersHorizontal size={20} />
               {filterCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[1.2rem] h-[1.2rem] px-1 rounded-full bg-[#F5B21B] text-ink-dark text-[11px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 min-w-[1.2rem] h-[1.2rem] px-1 rounded-full bg-[#FF5C8A] text-ink-dark text-[11px] font-bold flex items-center justify-center">
                   {filterCount}
                 </span>
               )}
@@ -260,14 +260,14 @@ export default function Gallery() {
           </span>
         </h1>
         <p className="fade-up mt-2 text-[15.5px] sm:text-lg text-ink/60 leading-relaxed" style={{ "--d": "450ms" }}>
-          Explore handpicked <RotatingWords words={ROLLING} className="font-bold text-[#9A6F06]" /> from our trusted sellers.
+          Explore handpicked <RotatingWords words={ROLLING} className="font-bold text-[#C0185A]" /> from our trusted sellers.
         </p>
       </div>
 
       <div ref={sentinelRef} className="h-px" aria-hidden="true" />
 
       {/* Category chips (stick to the top while you scroll) */}
-      <div className={`sticky top-0 z-30 bg-canvas transition-shadow duration-300 ${stuck ? "shadow-[0_10px_18px_-14px_rgba(11,37,89,0.45)]" : ""}`}>
+      <div className={`sticky top-0 z-30 bg-canvas transition-shadow duration-300 ${stuck ? "shadow-[0_10px_18px_-14px_rgba(7,50,58,0.45)]" : ""}`}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex gap-2.5 overflow-x-auto no-scrollbar" role="group" aria-label="Filter by property type">
           <Chip active={allActive} onClick={() => pickType("All")} icon={LayoutGrid} delay={500}>All</Chip>
           {types.map(({ type, n }, i) => (
@@ -325,7 +325,7 @@ export default function Gallery() {
         {hasAny && filterCount > 0 && (
           <p className="mt-1 mb-2 text-[13px] text-ink/60">
             {filterCount} filter{filterCount === 1 ? "" : "s"} on.{" "}
-            <button type="button" onClick={() => setFilters(DEFAULT_FILTERS)} className="font-bold text-[#7A5805] underline underline-offset-2">
+            <button type="button" onClick={() => setFilters(DEFAULT_FILTERS)} className="font-bold text-[#9D1148] underline underline-offset-2">
               Clear filters
             </button>
           </p>
@@ -366,7 +366,7 @@ export default function Gallery() {
                   <CountUp value={visible.length} />
                 </span>
               </h2>
-              <label className="relative flex items-center text-[#9A6F06] font-semibold text-[15px] cursor-pointer">
+              <label className="relative flex items-center text-[#C0185A] font-semibold text-[15px] cursor-pointer">
                 <span className="sr-only">Sort listings</span>
                 <select
                   value={sort}
@@ -411,7 +411,7 @@ export default function Gallery() {
 
         {/* Register prompt: sits at the end of the list, where interest is highest */}
         {hasAny && (
-          <div className="mt-12 rounded-3xl bg-ink text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_18px_36px_-18px_rgba(6,23,52,0.7)]">
+          <div className="mt-12 rounded-3xl bg-ink text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_18px_36px_-18px_rgba(3,30,35,0.7)]">
             <div>
               <p className="font-display font-bold text-xl">Have a property to sell, or looking to buy?</p>
               <p className="text-sm text-white/65 mt-1">Get listed with Star Housing. It takes a minute.</p>
@@ -430,10 +430,10 @@ export default function Gallery() {
         <button
           type="button"
           onClick={() => setCompareOpen(true)}
-          className="rip fixed z-40 left-1/2 -translate-x-1/2 bottom-5 h-12 pl-4 pr-5 rounded-full bg-ink-dark text-white text-[13.5px] font-bold flex items-center gap-2 shadow-[0_14px_30px_-10px_rgba(6,23,52,0.7)] ring-1 ring-[#F5B21B]/50 enter-up active:scale-95 transition-transform"
+          className="rip fixed z-40 left-1/2 -translate-x-1/2 bottom-5 h-12 pl-4 pr-5 rounded-full bg-ink-dark text-white text-[13.5px] font-bold flex items-center gap-2 shadow-[0_14px_30px_-10px_rgba(3,30,35,0.7)] ring-1 ring-[#FF5C8A]/50 enter-up active:scale-95 transition-transform"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
-          <GitCompareArrows size={18} className="text-[#FFD36B]" /> Compare {compareItems.length} saved
+          <GitCompareArrows size={18} className="text-[#FF9DB9]" /> Compare {compareItems.length} saved
         </button>
       )}
       {compareOpen && <CompareSheet items={compareItems} onClose={() => setCompareOpen(false)} />}

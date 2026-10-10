@@ -28,7 +28,7 @@ export default function GalleryPhotos() {
           {error ? <p className="alert-error max-w-sm mx-auto">{error}</p> : listing === null ? (
             <>
               <p className="font-display font-bold text-xl text-ink">This property isn't available anymore</p>
-              <Link to="/gallery" className="inline-block mt-4 text-[14px] font-bold text-[#7A5805]">See all properties</Link>
+              <Link to="/gallery" className="inline-block mt-4 text-[14px] font-bold text-[#9D1148]">See all properties</Link>
             </>
           ) : (
             <div className="grid grid-cols-3 gap-2 max-w-md mx-auto">
@@ -64,7 +64,7 @@ export default function GalleryPhotos() {
       <div className="max-w-3xl mx-auto px-4 pt-4 pb-10">
         <p className="font-display font-bold text-[1.15rem] text-ink truncate">{l.title}</p>
 
-        <div role="tablist" aria-label="Photos or location" className="mt-3 flex gap-1.5 rounded-2xl bg-[#E8F0FB] p-1.5">
+        <div role="tablist" aria-label="Photos or location" className="mt-3 flex gap-1.5 rounded-2xl bg-[#E3F1EC] p-1.5">
           {tabBtn("photos", `Photos (${count})`)}
           {tabBtn("location", "Location")}
         </div>
@@ -97,7 +97,7 @@ export default function GalleryPhotos() {
         ) : (
           <div className="mt-4">
             <div className="flex items-start gap-2.5 rounded-2xl bg-surface ring-1 ring-ink/[0.07] px-4 py-3.5">
-              <MapPin size={20} className="shrink-0 mt-0.5 text-[#9A6F06]" />
+              <MapPin size={20} className="shrink-0 mt-0.5 text-[#C0185A]" />
               <div>
                 <p className="text-[15px] font-semibold text-ink">{l.location || "Chennai"}</p>
                 <p className="text-[12.5px] text-ink/55 mt-0.5">This map shows the general area only, not the exact address.</p>

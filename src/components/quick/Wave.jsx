@@ -11,7 +11,7 @@ export function Wave({ peaks, progress = 0, height = 36, className = "" }) {
           <span
             key={i}
             className="flex-1 rounded-full transition-colors duration-150"
-            style={{ height: `${Math.max(12, v)}%`, backgroundColor: on ? "var(--accent)" : "rgba(11,37,89,0.18)", minWidth: 2 }}
+            style={{ height: `${Math.max(12, v)}%`, backgroundColor: on ? "var(--accent)" : "rgba(7,50,58,0.18)", minWidth: 2 }}
           />
         );
       })}

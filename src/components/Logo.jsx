@@ -9,7 +9,7 @@ function starPath(cx, cy, R, r) {
   return `M${pts.join("L")}Z`;
 }
 
-export function StarShape({ className = "", size = 16, color = "#F5B21B" }) {
+export function StarShape({ className = "", size = 16, color = "#FF5C8A" }) {
   return (
     <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       <path d={starPath(12, 12.5, 11, 4.6)} fill={color} />
@@ -18,13 +18,13 @@ export function StarShape({ className = "", size = 16, color = "#F5B21B" }) {
 }
 
 export default function Logo({ size = 44, tone = "dark", className = "" }) {
-  const body = tone === "light" ? "#FFFFFF" : "#0B2559";
+  const body = tone === "light" ? "#FFFFFF" : "#07323A";
   return (
     <svg className={className} width={size} height={size * 0.86} viewBox="0 0 120 100" aria-hidden="true">
       <defs>
         <linearGradient id={`sw-${tone}`} x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0" stopColor="#E39A05" />
-          <stop offset="1" stopColor="#FFD36B" />
+          <stop offset="0" stopColor="#E8336D" />
+          <stop offset="1" stopColor="#FF9DB9" />
         </linearGradient>
       </defs>
       <path d="M20 50 L56 22 L92 50" fill="none" stroke={body} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
@@ -32,7 +32,7 @@ export default function Logo({ size = 44, tone = "dark", className = "" }) {
       <rect x="44" y="52" width="24" height="22" rx="2" fill="none" stroke={body} strokeWidth="3.5" />
       <path d="M56 52 V74 M44 63 H68" stroke={body} strokeWidth="3" />
       <path d="M8 86 C -2 56 34 28 88 32" fill="none" stroke={`url(#sw-${tone})`} strokeWidth="6" strokeLinecap="round" />
-      <path d={starPath(90, 26, 17, 7)} fill="#F5B21B" />
+      <path d={starPath(90, 26, 17, 7)} fill="#FF5C8A" />
     </svg>
   );
 }

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 
 // Everything except the landing page is split into its own chunk, so a
@@ -20,15 +20,16 @@ const GalleryEnquiry = lazy(() => import("./pages/GalleryEnquiry"));
 function PageFallback() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center" role="status" aria-label="Loading">
-      <span className="w-9 h-9 rounded-full border-[3px] border-ink/10 border-t-gold animate-spin" />
+      <span className="w-9 h-9 rounded-full border-[3px] border-ink/10 border-t-peacock animate-spin" />
     </div>
   );
 }
 
 export default function App() {
+  const { pathname } = useLocation();
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1">
+      <main key={pathname} className="flex-1 route-in">
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />

@@ -49,7 +49,7 @@ export default function PropertyTile({ p, saved, onToggleSaved }) {
   return (
     <Link
       to={`/gallery/${p.id}`}
-      className="tile group relative isolate block overflow-hidden rounded-2xl bg-ink-dark aspect-[4/4.3] sm:aspect-[4/3] shadow-[0_8px_22px_-12px_rgba(6,23,52,0.55)] hover:shadow-[0_18px_34px_-14px_rgba(6,23,52,0.6)] transition-shadow active:scale-[0.985]"
+      className="tile group relative isolate block overflow-hidden rounded-2xl bg-ink-dark aspect-[4/4.3] sm:aspect-[4/3] shadow-[0_8px_22px_-12px_rgba(3,30,35,0.55)] hover:shadow-[0_18px_34px_-14px_rgba(3,30,35,0.6)] transition-shadow active:scale-[0.985]"
       onPointerEnter={(e) => {
         if (e.pointerType !== "mouse") return;
         setArmed(true);
@@ -84,7 +84,7 @@ export default function PropertyTile({ p, saved, onToggleSaved }) {
       {p.price && !p.soldOut && (
         <span className="absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5">
           <span className="rounded-full bg-ink-dark/70 backdrop-blur-sm text-white text-[12px] font-bold px-2.5 py-1">{p.price}</span>
-          {p.fresh && <span className="rounded-full bg-[#F5B21B] text-ink-dark text-[10px] font-bold uppercase tracking-wide px-2 py-0.5">Just listed</span>}
+          {p.fresh && <span className="rounded-full bg-[#FF5C8A] text-ink-dark text-[10px] font-bold uppercase tracking-wide px-2 py-0.5">Just listed</span>}
         </span>
       )}
       {p.soldOut && <SoldOutStamp size="sm" />}
@@ -111,7 +111,7 @@ export default function PropertyTile({ p, saved, onToggleSaved }) {
               <span className="truncate">{p.location.split(",")[0].trim()}</span>
             </p>
           )}
-          {p.meta && <p className="mt-1 text-[11.5px] font-semibold text-[#FFD36B] truncate">{p.meta}</p>}
+          {p.meta && <p className="mt-1 text-[11.5px] font-semibold text-[#FF9DB9] truncate">{p.meta}</p>}
         </div>
         {count > 0 && (
           <span className="shrink-0 flex items-center gap-1.5 rounded-full bg-ink-dark/65 text-white text-[12px] font-bold px-2.5 py-1">

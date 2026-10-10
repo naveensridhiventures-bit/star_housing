@@ -23,7 +23,7 @@ export default function FreshRail({ properties }) {
           <h2 className="font-display font-bold text-ink text-[1.5rem] sm:text-3xl leading-tight">New on the market</h2>
           <p className="text-[14px] text-ink/55 mt-0.5">Fresh listings from our sellers</p>
         </div>
-        <Link to="/gallery" className="group shrink-0 flex items-center gap-1.5 text-[14px] font-bold text-[#7A5805]">
+        <Link to="/gallery" className="group shrink-0 flex items-center gap-1.5 text-[14px] font-bold text-[#9D1148]">
           See all <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

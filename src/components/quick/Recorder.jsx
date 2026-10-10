@@ -38,7 +38,7 @@ export default function Recorder({ recorder, audio, onRecorded, onClear }) {
   // Preview after recording
   if (audio?.blob && state === "idle") {
     return (
-      <div className="rounded-2xl bg-[#F5F8FE] ring-1 ring-ink/[0.06] p-3.5 flex items-center gap-3 chip-pop">
+      <div className="rounded-2xl bg-[#F2F8F5] ring-1 ring-ink/[0.06] p-3.5 flex items-center gap-3 chip-pop">
         <audio
           ref={el}
           src={url}
@@ -69,7 +69,7 @@ export default function Recorder({ recorder, audio, onRecorded, onClear }) {
         onClick={toggleRecord}
         disabled={state === "starting"}
         aria-label={rec ? "Stop recording" : "Record a voice note"}
-        className={`rip relative w-full rounded-2xl flex items-center gap-4 px-4 py-4 text-left transition-colors active:scale-[0.99] ${rec ? "bg-[#FEE2E2] ring-2 ring-[#DC2626]" : "bg-[#F5F8FE] ring-1 ring-ink/[0.08] hover:bg-[#EEF4FD]"}`}
+        className={`rip relative w-full rounded-2xl flex items-center gap-4 px-4 py-4 text-left transition-colors active:scale-[0.99] ${rec ? "bg-[#FEE2E2] ring-2 ring-[#DC2626]" : "bg-[#F2F8F5] ring-1 ring-ink/[0.08] hover:bg-[#ECF5F1]"}`}
       >
         <span className="relative shrink-0 w-16 h-16 flex items-center justify-center">
           {rec && <span className="rec-ring absolute inset-0 rounded-full bg-[#DC2626]/30" aria-hidden="true" />}

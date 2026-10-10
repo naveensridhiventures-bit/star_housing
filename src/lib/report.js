@@ -10,8 +10,8 @@ async function loadPdf() {
 import { whatsappLink } from "./whatsapp";
 import { ADMIN_WHATSAPP_NUMBER } from "./config";
 
-const GOLD = [245, 178, 27];
-const PAPER = [243, 247, 254];
+const GOLD = [255, 92, 138];
+const PAPER = [240, 247, 243];
 
 function hexToRgb(hex) {
   const clean = hex.replace("#", "");
@@ -118,11 +118,11 @@ function buildMapUrl(lead, visitLog) {
 // role uses (passed in as `statuses`), since each role has its own custom
 // stage names rather than one shared New/Contacted/Closed set.
 const STATUS_PALETTE = [
-  [245, 178, 27],
+  [255, 92, 138],
   [14, 165, 233],
   [139, 92, 246],
   [16, 185, 129],
-  [234, 88, 12],
+  [232, 51, 109],
   [148, 163, 184],
 ];
 
@@ -154,7 +154,7 @@ export async function downloadBrochure(property) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 40;
-  const accent = [13, 148, 136]; // seller green — brand accent for buyer-facing docs
+  const accent = [14, 140, 132]; // seller green — brand accent for buyer-facing docs
 
   // Banner
   doc.setFillColor(...accent);
@@ -280,7 +280,7 @@ export async function downloadBrochure(property) {
       margin: { left: margin, right: margin },
       theme: "striped",
       styles: { fontSize: 10.5, cellPadding: 7, textColor: [30, 30, 40] },
-      alternateRowStyles: { fillColor: [243, 247, 254] },
+      alternateRowStyles: { fillColor: [240, 247, 243] },
       columnStyles: { 0: { fontStyle: "bold", textColor: [80, 80, 90], cellWidth: 160 } },
       body: facts,
     });
@@ -606,7 +606,7 @@ export async function downloadReport({ roleLabel, accent, fields, leads, filterL
       body: remarkRows,
       theme: "striped",
       styles: { fontSize: 8.5, cellPadding: 5, textColor: [30, 30, 40] },
-      alternateRowStyles: { fillColor: [243, 247, 254] },
+      alternateRowStyles: { fillColor: [240, 247, 243] },
       headStyles: { fillColor: [r, g, b], textColor: [255, 255, 255], fontStyle: "bold", fontSize: 8 },
       columnStyles: {
         0: { cellWidth: 95 },

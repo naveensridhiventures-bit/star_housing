@@ -17,7 +17,7 @@ export default function AboutProperty({ description, sellerNote }) {
   return (
     <section className="mt-7" aria-label="About this property">
       <h2 className="font-display font-bold text-[1.2rem] text-ink flex items-center gap-2.5">
-        <span className="w-1 h-5 rounded-full bg-gradient-to-b from-[#FFD36B] to-[#9A6F06]" />
+        <span className="w-1 h-5 rounded-full bg-gradient-to-b from-[#FF9DB9] to-[#C0185A]" />
         About this property
       </h2>
 
@@ -25,7 +25,7 @@ export default function AboutProperty({ description, sellerNote }) {
         <div className="mt-3 space-y-2 text-[15px] leading-relaxed text-ink/70">
           {shownIntro.map((t) => <p key={t}>{t}</p>)}
           {intro.length > 2 && (
-            <button type="button" onClick={() => setMoreText((v) => !v)} className="text-[13px] font-bold text-[#7A5805] underline underline-offset-2">
+            <button type="button" onClick={() => setMoreText((v) => !v)} className="text-[13px] font-bold text-[#9D1148] underline underline-offset-2">
               {moreText ? "Show less" : `Read ${intro.length - 2} more line${intro.length - 2 === 1 ? "" : "s"}`}
             </button>
           )}
@@ -37,8 +37,8 @@ export default function AboutProperty({ description, sellerNote }) {
           <ul className="mt-4 grid grid-cols-1 min-[420px]:grid-cols-2 gap-x-4 gap-y-2.5">
             {shownFeatures.map((f, i) => (
               <li key={f} className="fade-up flex items-start gap-2.5 text-[14px] leading-snug text-ink/80" style={{ "--d": `${Math.min(i, 8) * 55}ms` }}>
-                <span className="mt-[1px] w-5 h-5 rounded-full bg-[#FFF4D6] ring-1 ring-[#F5B21B]/40 flex items-center justify-center shrink-0">
-                  <Check size={12} strokeWidth={3.2} className="text-[#9A6F06]" />
+                <span className="mt-[1px] w-5 h-5 rounded-full bg-[#FFE6EE] ring-1 ring-[#FF5C8A]/40 flex items-center justify-center shrink-0">
+                  <Check size={12} strokeWidth={3.2} className="text-[#C0185A]" />
                 </span>
                 {f}
               </li>

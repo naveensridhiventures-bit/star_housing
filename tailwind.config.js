@@ -7,41 +7,43 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Star Housing palette ─────────────────────────────
-        navy: { DEFAULT: "#0B2559", light: "#17408F", dark: "#061734" },
-        sky: { DEFAULT: "#2E8BFF", light: "#8CC4FF", soft: "#E7F1FF" },
-        snow: { DEFAULT: "#F3F7FE", dim: "#E3ECFA" },
+        // Athangudi palette: peacock, bougainvillea, indigo on mint-white
+        navy: { DEFAULT: "#07323A", light: "#0E5B63", dark: "#031E23" },
+        sky: { DEFAULT: "#14A89E", light: "#7FD6CE", soft: "#E3F1EC" },
+        snow: { DEFAULT: "#F0F7F3", dim: "#DCEBE4" },
         danger: "#DC2626",
-        // ── Semantic names used across the app (mapped to Star) ──
-        ink: { DEFAULT: "#0B2559", light: "#17408F", dark: "#061734" },
-        paper: { DEFAULT: "#F3F7FE", dim: "#E3ECFA" },
-        gold: { DEFAULT: "#F5B21B", light: "#FFD36B", dark: "#B8820A" },
-        canvas: "#F3F7FE",
-        teal: "#0D9488",
+        // Semantic names used across the app
+        ink: { DEFAULT: "#07323A", light: "#0E5B63", dark: "#031E23" },
+        paper: { DEFAULT: "#F0F7F3", dim: "#DCEBE4" },
+        gold: { DEFAULT: "#FF5C8A", light: "#FF9DB9", dark: "#C0185A" },
+        peacock: { DEFAULT: "#0E8C84", dark: "#0B6B66", light: "#7FD6CE" },
+        canvas: "#F0F7F3",
+        teal: "#0E8C84",
         surface: "#FFFFFF",
         coral: "#DC2626",
         sage: "#5B9F96",
-        steel: "#2563EB",
-        mediator: "#2563EB",
-        seller: "#0D9488",
-        buyer: "#EA580C",
+        steel: "#4F46E5",
+        mediator: "#4F46E5",
+        seller: "#0E8C84",
+        buyer: "#E8336D",
         whatsapp: "#25D366",
       },
+      borderRadius: {
+        // Tile-square corners instead of soft blobs
+        xl: "10px",
+        "2xl": "13px",
+        "3xl": "16px",
+      },
       fontFamily: {
-        display: ["Montserrat", "system-ui", "sans-serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
+        display: ["'Bricolage Grotesque Variable'", "'Bricolage Grotesque'", "system-ui", "sans-serif"],
+        body: ["'Bricolage Grotesque Variable'", "'Bricolage Grotesque'", "system-ui", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
-        glow: "0 10px 40px -10px rgba(46,139,255,0.45)",
-        gold: "0 10px 30px -8px rgba(245,178,27,0.55)",
-        soft: "0 10px 40px -18px rgba(11,37,89,0.35)",
-      },
-      backgroundImage: {
-        grain: "radial-gradient(#0B255908 1px, transparent 1px)",
-      },
-      backgroundSize: {
-        grain: "16px 16px",
+        glow: "0 10px 40px -10px rgba(14,140,132,0.45)",
+        gold: "0 10px 30px -8px rgba(255,92,138,0.5)",
+        soft: "0 3px 0 0 rgba(7,50,58,0.08), 0 14px 30px -20px rgba(7,50,58,0.35)",
+        tile: "0 4px 0 0 rgba(7,50,58,0.9)",
       },
     },
   },
