@@ -1,3 +1,8 @@
+# v5c — WhatsApp number and admin password (2026-10-10)
+
+- WhatsApp number set to 916382277059 (all enquiries, visit bookings and the floating button)
+- Code.gs: setup() now sets the admin password to starhome@098; new setAdminPassword() sets just the password. Redeploy Code.gs and run setAdminPassword once.
+
 # v5b — New Apps Script URL (2026-10-10)
 
 Only `src/lib/config.js` changed: APPS_SCRIPT_URL points to the new deployment (…EuSX84Q).

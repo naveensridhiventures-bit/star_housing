@@ -12,7 +12,7 @@ export const CLOUDINARY_UPLOAD_PRESET = "PASTE_YOUR_UNSIGNED_UPLOAD_PRESET";
 
 // 3. Admin / your WhatsApp number in international format, no + or spaces
 //    e.g. 919876543210 for an Indian number
-export const ADMIN_WHATSAPP_NUMBER = "91XXXXXXXXXX";
+export const ADMIN_WHATSAPP_NUMBER = "916382277059";
 
 // 4. The number a SELLER's "Message us" button sends to. Same format.
 //    Leave as is to use the admin number above.

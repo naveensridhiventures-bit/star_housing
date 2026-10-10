@@ -506,7 +506,7 @@ function jsonResponse(obj) {
  * below first, then run it, then you can delete/ignore this function.
  */
 function setup() {
-  PropertiesService.getScriptProperties().setProperty("ADMIN_PASSWORD", "changeme123");
+  PropertiesService.getScriptProperties().setProperty("ADMIN_PASSWORD", "starhome@098");
   ["Mediators", "Sellers", "Buyers", "Properties", "QuickNotes"].forEach(getSheet);
   Logger.log("Setup complete. Admin password set — remember to change it!");
 }
@@ -521,4 +521,10 @@ function authorizeVoiceNotes() {
   getVoiceFolder();
   getSheet("QuickNotes");
   Logger.log("Ready. Voice notes will be saved in the Drive folder: " + VOICE_FOLDER_NAME);
+}
+
+
+/** Run this once to set the admin password without touching anything else. */
+function setAdminPassword() {
+  PropertiesService.getScriptProperties().setProperty("ADMIN_PASSWORD", "starhome@098");
 }
