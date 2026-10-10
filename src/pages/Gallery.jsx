@@ -1,24 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Search, X, LayoutGrid, Heart, ChevronDown, SlidersHorizontal, AlertTriangle, GitCompareArrows } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Search, X, LayoutGrid, List, Heart, ChevronDown, SlidersHorizontal, AlertTriangle, GitCompareArrows, ChevronRight } from "lucide-react";
 import { optimizedImageUrl } from "../lib/cloudinary";
 import useFavorites from "../lib/useFavorites";
 import useProperties from "../lib/useProperties";
 import useRecent from "../lib/useRecent";
-import { BUDGET_BANDS, DEFAULT_FILTERS, activeFilterCount, applyFilters, collectionsFor, inrShort, isNew, shortType, sortListings } from "../lib/gallery";
-import Reveal from "../components/Reveal";
-import RotatingWords from "../components/home/RotatingWords";
-import Ticker from "../components/home/Ticker";
-import ShowcaseHeader, { headerBtnCls } from "../components/gallery/ShowcaseHeader";
+import { BUDGET_BANDS, DEFAULT_FILTERS, activeFilterCount, applyFilters, collectionsFor, shortType, sortListings } from "../lib/gallery";
+import SiteNav from "../components/SiteNav";
+import SiteFooter from "../components/SiteFooter";
 import FeaturedCarousel from "../components/gallery/FeaturedCarousel";
-import PropertyTile from "../components/gallery/PropertyTile";
+import PropertyCard from "../components/gallery/PropertyCard";
 import FilterSheet from "../components/gallery/FilterSheet";
+import FilterPanel from "../components/gallery/FilterPanel";
 import CountUp from "../components/gallery/CountUp";
-import BudgetPills from "../components/gallery/BudgetPills";
 import StatsStrip from "../components/gallery/StatsStrip";
 import CollectionRail from "../components/gallery/CollectionRail";
 import CompareSheet from "../components/gallery/CompareSheet";
-import { iconForType } from "../components/gallery/typeIcons";
 
 const SORT_OPTIONS = [
   { key: "newest", label: "Newest first" },
@@ -26,37 +23,26 @@ const SORT_OPTIONS = [
   { key: "price-high", label: "Price: high to low" },
 ];
 const SCROLL_KEY = "star_gallery_scroll";
-const ROLLING = ["homes", "flats", "villas", "plots", "shops"];
 
-function Chip({ active, onClick, icon: Icon, children, count, delay = 0 }) {
+function Tab({ active, onClick, children, count }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      data-active={active}
-      style={{ "--d": `${delay}ms` }}
-      className={`rip chip enter-up shrink-0 h-12 pl-3.5 pr-4 rounded-2xl flex items-center gap-2 text-[14px] font-semibold transition-colors active:scale-95 ${
-        active ? "bg-ink text-white" : "bg-[#E3F1EC] text-ink/80 hover:bg-[#CFE3DA]"
-      }`}
+      className={`relative shrink-0 h-12 px-1 mr-6 text-[15px] font-semibold whitespace-nowrap transition-colors ${active ? "text-ink" : "text-ink/55 hover:text-ink"}`}
     >
-      <Icon size={20} strokeWidth={1.8} className="chip-ico shrink-0" fill={active && Icon === Heart ? "currentColor" : "none"} />
-      <span className={typeof children === "string" && children.length > 12 && children.includes(" ") ? "text-[13px] leading-[1.15] max-w-[5.4rem]" : "whitespace-nowrap"}>{children}</span>
-      {count != null && <span className={`text-[12px] font-bold ${active ? "text-white/70" : "text-ink/45"}`}>{count}</span>}
+      {children}
+      {count != null && <span className="ml-1.5 text-[12.5px] font-normal text-ink/45">{count}</span>}
+      <span className={`absolute left-0 right-0 bottom-0 h-0.5 bg-brand origin-left transition-transform duration-300 ${active ? "scale-x-100" : "scale-x-0"}`} />
     </button>
   );
 }
 
-function TileSkeleton() {
-  return <div className="rounded-2xl aspect-[4/4.3] sm:aspect-[4/3] skeleton" />;
-}
-
 export default function Gallery() {
-  const navigate = useNavigate();
   const favorites = useFavorites();
   const { properties, error } = useProperties();
   const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
   const [params] = useSearchParams();
   const [filters, setFilters] = useState(() => ({
     ...DEFAULT_FILTERS,
@@ -67,10 +53,9 @@ export default function Gallery() {
   const [savedOnly, setSavedOnly] = useState(false);
   const [sort, setSort] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
-  const [stuck, setStuck] = useState(false);
+  const [view, setView] = useState("grid");
   const [compareOpen, setCompareOpen] = useState(false);
   const recent = useRecent();
-  const sentinelRef = useRef(null);
   const restored = useRef(false);
   const lastY = useRef(0);
 
@@ -102,15 +87,6 @@ export default function Gallery() {
       // ignore
     }
   }, [properties]);
-
-  // The chip bar gets a soft shadow once it is stuck to the top.
-  useEffect(() => {
-    const node = sentinelRef.current;
-    if (!node || typeof IntersectionObserver === "undefined") return undefined;
-    const observer = new IntersectionObserver(([entry]) => setStuck(!entry.isIntersecting), { threshold: 0 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   const types = useMemo(() => {
     if (!properties) return [];
@@ -176,277 +152,188 @@ export default function Gallery() {
     setFilters(DEFAULT_FILTERS);
     setSavedOnly(false);
   }
-  function goBack() {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/");
-  }
 
   const loading = properties === null && !error;
   const hasAny = properties !== null && properties.length > 0;
   const allActive = filters.type === "All" && !savedOnly;
+  const chips = [];
+  if (filters.type !== "All") chips.push({ k: "type", label: shortType(filters.type), clear: () => setFilters((f) => ({ ...f, type: "All" })) });
+  if (filters.area !== "All") chips.push({ k: "area", label: filters.area, clear: () => setFilters((f) => ({ ...f, area: "All" })) });
+  if (filters.budget !== "any") chips.push({ k: "budget", label: BUDGET_BANDS.find((b) => b.key === filters.budget)?.label, clear: () => setFilters((f) => ({ ...f, budget: "any" })) });
+  if (filters.facing && filters.facing !== DEFAULT_FILTERS.facing) chips.push({ k: "facing", label: `${filters.facing} facing`, clear: () => setFilters((f) => ({ ...f, facing: DEFAULT_FILTERS.facing })) });
+  if (query.trim()) chips.push({ k: "q", label: `“${query.trim()}”`, clear: () => setQuery("") });
 
   return (
     <div className="min-h-screen bg-canvas">
-      <ShowcaseHeader
-        left={
-          <button type="button" onClick={goBack} aria-label="Go back" className={headerBtnCls}>
-            <ArrowLeft size={22} />
-          </button>
-        }
-        right={
-          <button
-            type="button"
-            onClick={() => setSearchOpen((o) => !o)}
-            aria-label={searchOpen ? "Close search" : "Search listings"}
-            aria-expanded={searchOpen}
-            className={headerBtnCls}
-          >
-            {searchOpen ? <X size={21} /> : <Search size={21} />}
-            {!searchOpen && (query.trim() || filterCount > 0) && <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#FF9DB9]" />}
-          </button>
-        }
-      />
+      <SiteNav />
 
-      {/* Search (with the price / size / facing filters) slides open under the header */}
-      <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${searchOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-        <div className="overflow-hidden">
-          <div className="max-w-6xl mx-auto px-4 pt-4 flex gap-2.5">
-            <div className="relative flex-1 min-w-0">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
+      <header className="bg-white border-b border-line">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-0">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13.5px] text-ink/55">
+            <Link to="/" className="hover:text-ink">Home</Link><ChevronRight size={14} /><span className="text-ink">Properties</span>
+          </nav>
+          <div className="mt-3 flex flex-col md:flex-row md:items-end justify-between gap-5">
+            <div>
+              <h1 className="font-display text-[2.3rem] sm:text-[3rem] leading-[1.02] text-ink">Properties for sale</h1>
+              <div className="mt-2"><StatsStrip properties={properties || []} /></div>
+            </div>
+            <div className="relative w-full md:w-[24rem]">
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/45" />
               <input
-                autoFocus={searchOpen}
-                tabIndex={searchOpen ? 0 : -1}
-                className="w-full h-12 rounded-2xl border border-ink/10 bg-surface pl-11 pr-11 text-[15px] text-ink placeholder:text-ink/40 outline-none focus:border-[#C0185A] focus:shadow-[0_0_0_3px_rgba(192,24,90,0.18)] transition"
+                className="w-full h-12 rounded-lg border border-line bg-canvas pl-11 pr-11 text-[15px] text-ink placeholder:text-ink/45 outline-none focus:border-brand focus:bg-white transition-colors"
                 placeholder="Search by title, area or type"
                 aria-label="Search listings"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
               {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full hover:bg-ink/5 flex items-center justify-center"
-                >
+                <button type="button" onClick={() => setQuery("")} aria-label="Clear search" className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-md hover:bg-ink/5 flex items-center justify-center">
                   <X size={16} className="text-ink/50" />
                 </button>
               )}
             </div>
-            <button
-              type="button"
-              tabIndex={searchOpen ? 0 : -1}
-              onClick={() => setShowFilters(true)}
-              aria-label={filterCount ? `Filters, ${filterCount} active` : "Filters"}
-              className="relative shrink-0 w-12 h-12 rounded-2xl bg-ink-dark text-white flex items-center justify-center active:scale-95 transition-transform"
-            >
-              <SlidersHorizontal size={20} />
-              {filterCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[1.2rem] h-[1.2rem] px-1 rounded-full bg-[#FF5C8A] text-ink-dark text-[11px] font-bold flex items-center justify-center">
-                  {filterCount}
-                </span>
-              )}
-            </button>
           </div>
-        </div>
-      </div>
-
-      {/* Title + rolling subtitle */}
-      <div className="max-w-6xl mx-auto px-4 pt-6">
-        <h1 className="font-display font-bold text-ink text-[2.1rem] sm:text-5xl leading-[1.08] tracking-tight" aria-label="Property Gallery">
-          <span aria-hidden="true">
-            <span className="mask-word"><span className="mask-inner" style={{ "--d": "100ms" }}>Property</span></span>{" "}
-            <span className="mask-word"><span className="mask-inner" style={{ "--d": "220ms" }}>Gallery</span></span>
-          </span>
-        </h1>
-        <p className="fade-up mt-2 text-[15.5px] sm:text-lg text-ink/60 leading-relaxed" style={{ "--d": "450ms" }}>
-          Explore handpicked <RotatingWords words={ROLLING} className="font-bold text-[#C0185A]" /> from our trusted sellers.
-        </p>
-      </div>
-
-      <div ref={sentinelRef} className="h-px" aria-hidden="true" />
-
-      {/* Category chips (stick to the top while you scroll) */}
-      <div className={`sticky top-0 z-30 bg-canvas transition-shadow duration-300 ${stuck ? "shadow-[0_10px_18px_-14px_rgba(7,50,58,0.45)]" : ""}`}>
-        <div className="max-w-6xl mx-auto px-4 py-3 flex gap-2.5 overflow-x-auto no-scrollbar" role="group" aria-label="Filter by property type">
-          <Chip active={allActive} onClick={() => pickType("All")} icon={LayoutGrid} delay={500}>All</Chip>
-          {types.map(({ type, n }, i) => (
-            <Chip
-              key={type}
-              active={!savedOnly && filters.type === type}
-              onClick={() => pickType(type)}
-              icon={iconForType(type)}
-              count={n}
-              delay={560 + i * 60}
-            >
-              {shortType(type)}
-            </Chip>
-          ))}
-          {(savedCount > 0 || savedOnly) && (
-            <Chip
-              active={savedOnly}
-              onClick={() => {
-                setSavedOnly(true);
-                setFilters((f) => ({ ...f, type: "All" }));
-              }}
-              icon={Heart}
-              count={savedCount}
-            >
-              Saved
-            </Chip>
-          )}
-        </div>
-      </div>
-
-      <main className="max-w-6xl mx-auto px-4 pb-10">
-        {hasAny && (
-          <div className="pt-1 pb-1 space-y-3">
-            <BudgetPills value={filters.budget} onChange={(budget) => setFilters((f) => ({ ...f, budget }))} />
-            {browsing && <StatsStrip properties={properties} />}
-          </div>
-        )}
-
-        {error && (
-          <p className="alert-error max-w-md mx-auto mt-6">
-            <AlertTriangle size={15} className="shrink-0 mt-0.5" />
-            {error}
-          </p>
-        )}
-
-        {loading && (
-          <>
-            <div className="mt-3 rounded-3xl aspect-[16/11] sm:aspect-[21/9] skeleton" />
-            <div className="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {Array.from({ length: 6 }).map((_, i) => <TileSkeleton key={i} />)}
-            </div>
-          </>
-        )}
-
-        {hasAny && filterCount > 0 && (
-          <p className="mt-1 mb-2 text-[13px] text-ink/60">
-            {filterCount} filter{filterCount === 1 ? "" : "s"} on.{" "}
-            <button type="button" onClick={() => setFilters(DEFAULT_FILTERS)} className="font-bold text-[#9D1148] underline underline-offset-2">
-              Clear filters
-            </button>
-          </p>
-        )}
-
-        {hasAny && featured.length > 0 && (
-          <div className="enter-up mt-3" style={{ "--d": "750ms" }}>
-            <FeaturedCarousel items={featured} />
-          </div>
-        )}
-
-        {hasAny && areas.length > 1 && (
-          <div className="mt-6" aria-label="Areas with listings">
-            <Ticker words={areas.slice(0, 12)} light />
-          </div>
-        )}
-
-        {recentItems.length >= 1 && (
-          <CollectionRail eyebrow="Pick up where you left off" title="Recently viewed" items={recentItems} />
-        )}
-        {collections.map((c, i) => (
-          <CollectionRail key={c.key} eyebrow={i === 0 ? "Curated for you" : undefined} title={c.title} subtitle={c.subtitle} items={c.items} />
-        ))}
-
-        {properties !== null && !hasAny && !error && (
-          <div className="mt-10 rounded-3xl bg-surface border border-dashed border-ink/20 p-10 text-center">
-            <p className="font-display font-bold text-xl text-ink">No listings published yet</p>
-            <p className="text-sm text-ink/55 mt-1.5">New properties appear here as soon as they are shared. Check back soon.</p>
-          </div>
-        )}
-
-        {hasAny && (
-          <>
-            <div className="mt-7 flex items-end justify-between gap-3">
-              <h2 className="font-display font-bold text-ink text-[1.6rem] sm:text-3xl leading-tight">
-                {savedOnly ? "Saved listings" : browsing ? "All listings" : "Matching listings"}
-                <span className="ml-2 align-middle text-[13px] font-bold text-white bg-ink rounded-full px-2.5 py-0.5">
-                  <CountUp value={visible.length} />
-                </span>
-              </h2>
-              <label className="relative flex items-center text-[#C0185A] font-semibold text-[15px] cursor-pointer">
-                <span className="sr-only">Sort listings</span>
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="appearance-none bg-transparent pr-6 text-right cursor-pointer outline-none focus-visible:underline"
-                >
-                  {SORT_OPTIONS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
-                </select>
-                <ChevronDown size={16} className="absolute right-0 pointer-events-none" />
-              </label>
-            </div>
-
-            {visible.length === 0 ? (
-              <div className="mt-6 rounded-3xl bg-surface border border-dashed border-ink/20 p-10 text-center">
-                <p className="font-display font-bold text-lg text-ink">{savedOnly ? "Nothing saved yet" : "No listings match"}</p>
-                <p className="text-sm text-ink/55 mt-1.5">
-                  {savedOnly ? "Tap the heart on any property to keep it here." : "Try a different search or clear the filters."}
-                </p>
-                <button
-                  type="button"
-                  onClick={resetAll}
-                  className="mt-5 h-11 px-6 rounded-full border border-ink/20 text-ink text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-ink/5 transition-colors"
-                >
-                  {savedOnly ? "Browse all listings" : "Clear filters"}
-                </button>
-              </div>
-            ) : (
-              <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {visible.map((l, i) => (
-                  <Reveal key={l.id} delay={(i % 2) * 90} distance={22}>
-                    <PropertyTile
-                      p={{ id: l.id, title: l.title, location: l.location, price: l.price, soldOut: l.sold, fresh: isNew(l), meta: [l.sqft ? `${l.sqft.toLocaleString("en-IN")} sq.ft` : "", l.pricePerSqft ? `${inrShort(l.pricePerSqft)}/sq.ft` : ""].filter(Boolean).join(" · "), images: l.images.map((u) => optimizedImageUrl(u, 600)) }}
-                      saved={favorites.has(l.id)}
-                      onToggleSaved={favorites.toggle}
-                    />
-                  </Reveal>
-                ))}
-              </div>
+          <div className="mt-5 flex overflow-x-auto no-scrollbar -mb-px" role="group" aria-label="Filter by property type">
+            <Tab active={allActive} onClick={() => pickType("All")}>All</Tab>
+            {types.map(({ type, n }) => (
+              <Tab key={type} active={!savedOnly && filters.type === type} onClick={() => pickType(type)} count={n}>{shortType(type)}</Tab>
+            ))}
+            {(savedCount > 0 || savedOnly) && (
+              <Tab active={savedOnly} onClick={() => { setSavedOnly(true); setFilters((f) => ({ ...f, type: "All" })); }} count={savedCount}>
+                <Heart size={14} className="inline -mt-0.5 mr-1" fill={savedOnly ? "currentColor" : "none"} />Saved
+              </Tab>
             )}
-          </>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:grid lg:grid-cols-[17.5rem_minmax(0,1fr)] lg:gap-8">
+        {hasAny && (
+          <aside className="hidden lg:block" aria-label="Filters">
+            <div className="sticky top-24 card p-5 max-h-[calc(100dvh-7rem)] overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-[1.35rem] text-ink">Filters</h2>
+                {filterCount > 0 && <span className="text-[12px] font-semibold bg-brand text-white rounded px-2 py-0.5">{filterCount}</span>}
+              </div>
+              <FilterPanel idp="side" filters={filters} onChange={setFilters} types={types} areas={areas} />
+            </div>
+          </aside>
         )}
 
-        {/* Register prompt: sits at the end of the list, where interest is highest */}
-        {hasAny && (
-          <div className="mt-12 rounded-3xl bg-ink text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_18px_36px_-18px_rgba(3,30,35,0.7)]">
-            <div>
-              <p className="font-display font-bold text-xl">Have a property to sell, or looking to buy?</p>
-              <p className="text-sm text-white/65 mt-1">Get listed with Star Housing. It takes a minute.</p>
+        <main className="min-w-0">
+          {error && (
+            <p className="alert-error max-w-md mx-auto mb-6">
+              <AlertTriangle size={15} className="shrink-0 mt-0.5" />
+              {error}
+            </p>
+          )}
+
+          {loading && (
+            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-[24rem] rounded-2xl skeleton" />)}
             </div>
-            <Link
-              to="/"
-              className="shrink-0 h-12 px-7 rounded-full bg-coral text-white text-[12px] font-bold uppercase tracking-[0.12em] flex items-center justify-center hover:brightness-110 transition"
-            >
-              Register now
-            </Link>
-          </div>
-        )}
-      </main>
+          )}
+
+          {hasAny && featured.length > 0 && browsing && <FeaturedCarousel items={featured} />}
+
+          {recentItems.length >= 1 && <CollectionRail title="Recently viewed" subtitle="Pick up where you left off" items={recentItems} />}
+          {collections.map((c) => <CollectionRail key={c.key} title={c.title} subtitle={c.subtitle} items={c.items} />)}
+
+          {properties !== null && !hasAny && !error && (
+            <div className="card p-10 text-center">
+              <p className="font-display text-[1.6rem] text-ink">No listings published yet</p>
+              <p className="text-[15px] text-ink/60 mt-1.5">New properties appear here as soon as they are shared. Check back soon.</p>
+            </div>
+          )}
+
+          {hasAny && (
+            <section className={browsing && (featured.length > 0 || collections.length > 0) ? "mt-12" : ""} aria-label="All listings">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line">
+                <h2 className="font-display text-[1.6rem] sm:text-[1.9rem] leading-tight text-ink">
+                  {savedOnly ? "Saved listings" : browsing ? "All listings" : "Matching listings"}
+                  <span className="ml-2 text-[15px] font-sans font-normal text-ink/55"><CountUp value={visible.length} /> found</span>
+                </h2>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => setShowFilters(true)} className="lg:hidden btn-ghost !h-10 !px-3.5 text-[14px]" aria-label={filterCount ? `Filters, ${filterCount} active` : "Filters"}>
+                    <SlidersHorizontal size={16} /> Filters{filterCount > 0 && <span className="ml-0.5 text-[12px] bg-brand text-white rounded px-1.5">{filterCount}</span>}
+                  </button>
+                  <label className="relative flex items-center h-10 rounded-lg border border-line bg-white pl-3 pr-8 text-[14px] font-semibold text-ink cursor-pointer">
+                    <span className="sr-only">Sort listings</span>
+                    <select value={sort} onChange={(e) => setSort(e.target.value)} className="appearance-none bg-transparent pr-2 cursor-pointer outline-none">
+                      {SORT_OPTIONS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
+                    </select>
+                    <ChevronDown size={15} className="absolute right-2.5 pointer-events-none text-ink/50" />
+                  </label>
+                  <div className="hidden sm:flex rounded-lg border border-line bg-white p-0.5" role="group" aria-label="Layout">
+                    {[["grid", LayoutGrid, "Grid view"], ["list", List, "List view"]].map(([k, Icon, lab]) => (
+                      <button key={k} type="button" aria-label={lab} aria-pressed={view === k} onClick={() => setView(k)} className={`w-9 h-9 rounded-md flex items-center justify-center transition-colors ${view === k ? "bg-ink text-white" : "text-ink/55 hover:text-ink"}`}>
+                        <Icon size={17} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {chips.length > 0 && (
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {chips.map((c) => (
+                    <button key={c.k} type="button" onClick={c.clear} className="h-8 pl-3 pr-2 rounded-full bg-brand-soft text-brand-dark text-[13px] font-semibold flex items-center gap-1.5 hover:bg-brand hover:text-white transition-colors">
+                      {c.label}<X size={14} />
+                    </button>
+                  ))}
+                  <button type="button" onClick={resetAll} className="text-[13.5px] font-semibold text-ink/60 hover:text-ink underline underline-offset-2 ml-1">Clear all</button>
+                </div>
+              )}
+
+              {visible.length === 0 ? (
+                <div className="mt-6 card p-10 text-center">
+                  <p className="font-display text-[1.4rem] text-ink">{savedOnly ? "Nothing saved yet" : "No listings match"}</p>
+                  <p className="text-[15px] text-ink/60 mt-1.5">{savedOnly ? "Tap the heart on any property to keep it here." : "Try a different search or clear the filters."}</p>
+                  <button type="button" onClick={resetAll} className="btn-ghost mt-5">{savedOnly ? "Browse all listings" : "Clear filters"}</button>
+                </div>
+              ) : view === "grid" ? (
+                <div className="mt-5 grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                  {visible.map((l, i) => <PropertyCard key={l.id} l={l} index={i % 9} saved={favorites.has(l.id)} onToggleSaved={() => favorites.toggle(l.id)} />)}
+                </div>
+              ) : (
+                <div className="mt-5 grid gap-4">
+                  {visible.map((l, i) => <PropertyCard key={l.id} l={l} layout="list" index={i % 9} saved={favorites.has(l.id)} onToggleSaved={() => favorites.toggle(l.id)} />)}
+                </div>
+              )}
+            </section>
+          )}
+
+          {hasAny && (
+            <div className="mt-12 rounded-2xl bg-ink-dark text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-display text-[1.5rem] leading-tight">Have a property to sell, or looking to buy?</p>
+                <p className="text-[15px] text-white/65 mt-1">Get listed with Star Housing. It takes a minute.</p>
+              </div>
+              <div className="flex gap-3 shrink-0">
+                <Link to="/seller" className="btn-primary">Sell a property</Link>
+                <Link to="/buyer" className="btn-outline-light">I want to buy</Link>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      <SiteFooter />
 
       {compareItems.length >= 2 && !compareOpen && (
         <button
           type="button"
           onClick={() => setCompareOpen(true)}
-          className="rip fixed z-40 left-1/2 -translate-x-1/2 bottom-5 h-12 pl-4 pr-5 rounded-full bg-ink-dark text-white text-[13.5px] font-bold flex items-center gap-2 shadow-[0_14px_30px_-10px_rgba(3,30,35,0.7)] ring-1 ring-[#FF5C8A]/50 enter-up active:scale-95 transition-transform"
+          className="rip fixed z-40 left-1/2 -translate-x-1/2 bottom-5 h-12 pl-4 pr-5 rounded-lg bg-ink-dark text-white text-[14px] font-semibold flex items-center gap-2 shadow-lift rise"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
-          <GitCompareArrows size={18} className="text-[#FF9DB9]" /> Compare {compareItems.length} saved
+          <GitCompareArrows size={18} className="text-brand-light" /> Compare {compareItems.length} saved
         </button>
       )}
       {compareOpen && <CompareSheet items={compareItems} onClose={() => setCompareOpen(false)} />}
 
       {showFilters && (
-        <FilterSheet
-          filters={filters}
-          onChange={setFilters}
-          types={types.map((t) => t.type)}
-          areas={areas}
-          resultCount={visible.length}
-          onClose={() => setShowFilters(false)}
-        />
+        <FilterSheet filters={filters} onChange={setFilters} types={types} areas={areas} resultCount={visible.length} onClose={() => setShowFilters(false)} />
       )}
     </div>
   );

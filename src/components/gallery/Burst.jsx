@@ -1,4 +1,4 @@
-const COLORS = ["#FF5C8A", "#FF9DB9", "#DC2626", "#0E8C84", "#4F46E5", "#07323A"];
+const COLORS = ["#5B3FE0", "#A99BFF", "#DC2626", "#0F8A5F", "#5B3FE0", "#0F1424"];
 
 // Deterministic "random" so render stays pure and the burst looks the same every time.
 const rnd = (i, k) => {

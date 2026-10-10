@@ -25,7 +25,7 @@ function readPw() {
 }
 
 const inputCls =
-  "w-full rounded-2xl border border-ink/10 bg-[#F2F8F5] h-[3.4rem] text-[17px] text-ink placeholder:text-ink/35 outline-none transition " +
+  "w-full rounded-2xl border border-ink/10 bg-[#F6F7FB] h-[3.4rem] text-[17px] text-ink placeholder:text-ink/35 outline-none transition " +
   "focus:bg-white focus:border-[color:var(--accent)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent)_16%,transparent)]";
 
 function AuthBox({ onAuthed }) {
@@ -55,14 +55,14 @@ function AuthBox({ onAuthed }) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-3xl bg-[#FFE6EE] ring-1 ring-[#FF5C8A]/40 p-4">
-      <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><Lock size={16} className="text-[#C0185A]" /> Sign in to sync</p>
+    <form onSubmit={submit} className="rounded-3xl bg-[#EEEAFE] ring-1 ring-[#5B3FE0]/40 p-4">
+      <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><Lock size={16} className="text-[#432BC2]" /> Sign in to sync</p>
       <p className="text-[13.5px] text-ink/60 mt-1">You can keep saving calls right now. They upload once you sign in.</p>
       <div className="mt-3 flex gap-2.5">
-        <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="Admin password" aria-label="Admin password" autoComplete="current-password" className="flex-1 min-w-0 h-12 rounded-2xl border border-ink/12 bg-white px-4 text-[15px] outline-none focus:border-[#FF5C8A]" />
+        <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="Admin password" aria-label="Admin password" autoComplete="current-password" className="flex-1 min-w-0 h-12 rounded-2xl border border-ink/12 bg-white px-4 text-[15px] outline-none focus:border-[#5B3FE0]" />
         <button type="submit" disabled={busy || !pw} className="rip h-12 px-5 rounded-2xl bg-ink text-white text-[14px] font-bold disabled:opacity-40 active:scale-95 transition">{busy ? "Checking" : "Sign in"}</button>
       </div>
-      <label className="mt-2.5 flex items-center gap-2 text-[13px] text-ink/60"><input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="accent-[#C0185A] w-4 h-4" /> Keep me signed in on this phone</label>
+      <label className="mt-2.5 flex items-center gap-2 text-[13px] text-ink/60"><input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="accent-[#432BC2] w-4 h-4" /> Keep me signed in on this phone</label>
       {err && <p className="text-[13px] text-coral mt-2">{err}</p>}
     </form>
   );
@@ -250,7 +250,7 @@ export default function QuickNotes() {
 
   const phoneOk = isValidPhone(phone);
   const syncPill =
-    q.sync === "auth" || !password ? { Icon: Lock, text: "Sign in to sync", cls: "bg-[#FFE6EE] text-[#9D1148]" }
+    q.sync === "auth" || !password ? { Icon: Lock, text: "Sign in to sync", cls: "bg-[#EEEAFE] text-[#3A24A8]" }
     : !online || q.sync === "offline" ? { Icon: CloudOff, text: waiting ? `Offline, ${waiting} waiting` : "Offline", cls: "bg-white/15 text-white" }
     : q.sync === "syncing" || waiting ? { Icon: Loader2, text: "Syncing", cls: "bg-white/15 text-white", spin: true }
     : { Icon: CloudCheck, text: "All saved", cls: "bg-white/15 text-white" };
@@ -274,8 +274,8 @@ export default function QuickNotes() {
         {(!password || q.sync === "auth") && <div className="mt-5"><AuthBox onAuthed={setPassword} /></div>}
 
         {/* ---------- Capture ---------- */}
-        <section className="relative mt-5 rounded-[1.75rem] bg-surface ring-1 ring-ink/[0.07] p-4 sm:p-5 shadow-[0_24px_50px_-30px_rgba(7,50,58,0.6)]" aria-label="Save a call">
-          <span className="absolute inset-x-6 top-0 h-[2px] rounded-b-full bg-gradient-to-r from-transparent via-[#FF5C8A] to-transparent" aria-hidden="true" />
+        <section className="relative mt-5 rounded-[1.75rem] bg-surface ring-1 ring-ink/[0.07] p-4 sm:p-5 shadow-[0_24px_50px_-30px_rgba(15,20,36,0.6)]" aria-label="Save a call">
+          <span className="absolute inset-x-6 top-0 h-[2px] rounded-b-full bg-gradient-to-r from-transparent via-[#5B3FE0] to-transparent" aria-hidden="true" />
           <form onSubmit={(e) => { e.preventDefault(); save(); }} noValidate>
             <label className="block">
               <span className="block text-[13px] font-semibold text-ink/60 mb-1.5 ml-0.5">Phone number</span>
@@ -292,7 +292,7 @@ export default function QuickNotes() {
                   aria-invalid={msg ? true : undefined}
                   className={`${inputCls} pl-11 pr-12 tabular-nums tracking-wide font-semibold ${msg ? "!border-coral" : ""}`}
                 />
-                {phoneOk && <span className="tick-pop absolute right-3.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center bg-[#0B6B66]"><Check size={14} className="text-white" strokeWidth={3.5} /></span>}
+                {phoneOk && <span className="tick-pop absolute right-3.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center bg-[#0B6B49]"><Check size={14} className="text-white" strokeWidth={3.5} /></span>}
                 {!phoneOk && phone && <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-bold text-ink/35 tabular-nums">{phone.length}/10</span>}
               </span>
               {msg && <span className="block text-[13px] text-coral mt-1.5 ml-0.5" role="alert">{msg}</span>}
@@ -311,22 +311,22 @@ export default function QuickNotes() {
             </div>
 
             {showText ? (
-              <textarea value={text} onChange={(e) => setText(e.target.value)} rows={2} placeholder="Short text note" aria-label="Text note" autoFocus className="mt-3.5 w-full rounded-2xl border border-ink/10 bg-[#F2F8F5] px-4 py-3 text-[15px] outline-none focus:bg-white focus:border-[color:var(--accent)] resize-none" />
+              <textarea value={text} onChange={(e) => setText(e.target.value)} rows={2} placeholder="Short text note" aria-label="Text note" autoFocus className="mt-3.5 w-full rounded-2xl border border-ink/10 bg-[#F6F7FB] px-4 py-3 text-[15px] outline-none focus:bg-white focus:border-[color:var(--accent)] resize-none" />
             ) : (
               <button type="button" onClick={() => setShowText(true)} className="mt-3 flex items-center gap-1.5 text-[13.5px] font-semibold text-ink/55 hover:text-ink"><Plus size={15} /> Add a text note</button>
             )}
 
-            <button type="submit" className="rip btn-shine relative mt-4 w-full h-[3.6rem] rounded-full bg-ink text-white text-[16px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-[0_14px_28px_-14px_rgba(7,50,58,0.9)]">
+            <button type="submit" className="rip btn-shine relative mt-4 w-full h-[3.6rem] rounded-full bg-ink text-white text-[16px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-[0_14px_28px_-14px_rgba(15,20,36,0.9)]">
               Save call
               <Burst fire={burst} count={14} spread={70} big />
             </button>
           </form>
 
           {just && (
-            <div className="saved-flash mt-3.5 flex items-center gap-3 rounded-2xl bg-[#E3F4F1] ring-1 ring-[#0B6B66]/25 px-3.5 py-2.5" role="status">
-              <span className="tick-pop w-7 h-7 rounded-full bg-[#0B6B66] flex items-center justify-center shrink-0"><Check size={15} className="text-white" strokeWidth={3.5} /></span>
+            <div className="saved-flash mt-3.5 flex items-center gap-3 rounded-2xl bg-[#E6F4EE] ring-1 ring-[#0B6B49]/25 px-3.5 py-2.5" role="status">
+              <span className="tick-pop w-7 h-7 rounded-full bg-[#0B6B49] flex items-center justify-center shrink-0"><Check size={15} className="text-white" strokeWidth={3.5} /></span>
               <p className="flex-1 min-w-0 text-[14px] leading-snug text-ink/80 line-clamp-2"><b className="tabular-nums">{fmtPhone(just.phone)}</b>{just.name ? ` · ${just.name}` : ""} saved. Ready for the next call.</p>
-              <button type="button" onClick={undo} className="rip shrink-0 h-9 px-3 rounded-full text-[13px] font-bold text-[#0B6B66] flex items-center gap-1.5 hover:bg-[#0B6B66]/10 active:scale-95 transition"><Undo2 size={14} /> Undo</button>
+              <button type="button" onClick={undo} className="rip shrink-0 h-9 px-3 rounded-full text-[13px] font-bold text-[#0B6B49] flex items-center gap-1.5 hover:bg-[#0B6B49]/10 active:scale-95 transition"><Undo2 size={14} /> Undo</button>
             </div>
           )}
         </section>
@@ -342,7 +342,7 @@ export default function QuickNotes() {
             {hasAudioInList && (
               <div className="flex items-center gap-2">
                 <button type="button" onClick={cycleRate} aria-label={`Playback speed ${rate} times`} className="rip h-10 px-3 rounded-full border border-ink/15 text-[13px] font-bold text-ink/70 flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition"><Gauge size={14} /> {rate}×</button>
-                <button type="button" onClick={startPlayAll} className={`rip h-10 px-4 rounded-full text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition ${playAll ? "bg-coral text-white" : "bg-[#FFE6EE] text-[#9D1148] ring-1 ring-[#FF5C8A]/40"}`}>
+                <button type="button" onClick={startPlayAll} className={`rip h-10 px-4 rounded-full text-[13px] font-bold flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition ${playAll ? "bg-coral text-white" : "bg-[#EEEAFE] text-[#3A24A8] ring-1 ring-[#5B3FE0]/40"}`}>
                   {playAll ? <><Square size={13} fill="currentColor" /> Stop</> : <><ListMusic size={15} /> Play all</>}
                 </button>
               </div>

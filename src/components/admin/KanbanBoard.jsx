@@ -17,7 +17,7 @@ function FollowChip({ role, lead }) {
   const diff = dayDiff(d);
   const label = over ? `${-diff}d overdue` : diff === 0 ? "Today" : diff === 1 ? "Tomorrow" : d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
   return (
-    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full ${over ? "bg-coral/15 text-coral" : diff === 0 ? "bg-gold/20 text-[#C0185A]" : "bg-ink/5 text-ink/55"}`}>
+    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full ${over ? "bg-coral/15 text-coral" : diff === 0 ? "bg-gold/20 text-[#432BC2]" : "bg-ink/5 text-ink/55"}`}>
       {label}
     </span>
   );
@@ -33,7 +33,7 @@ function KanbanCard({ role, lead, statuses, current, dragging, onDragStart, onDr
       draggable
       onDragStart={(e) => onDragStart(e, lead.id)}
       onDragEnd={onDragEnd}
-      className={`group rounded-2xl bg-surface border border-ink/10 p-3 shadow-[0_1px_0_rgba(7,50,58,0.04)] transition ${dragging ? "opacity-40 scale-[0.98]" : "hover:border-ink/25 hover:shadow-[0_8px_20px_-10px_rgba(7,50,58,0.35)] cursor-grab active:cursor-grabbing"}`}
+      className={`group rounded-2xl bg-surface border border-ink/10 p-3 shadow-[0_1px_0_rgba(15,20,36,0.04)] transition ${dragging ? "opacity-40 scale-[0.98]" : "hover:border-ink/25 hover:shadow-[0_8px_20px_-10px_rgba(15,20,36,0.35)] cursor-grab active:cursor-grabbing"}`}
     >
       <div className="flex items-start gap-1.5">
         <GripVertical size={14} className="mt-0.5 text-ink/20 group-hover:text-ink/45 shrink-0 hidden sm:block" aria-hidden="true" />
@@ -56,7 +56,7 @@ function KanbanCard({ role, lead, statuses, current, dragging, onDragStart, onDr
           value={current}
           onChange={(e) => onMove(lead.id, e.target.value)}
           aria-label={`Move ${lead.name} to another stage`}
-          className="min-w-0 flex-1 h-8 rounded-full border border-ink/10 bg-[#F2F8F5] px-2.5 text-[11.5px] font-semibold text-ink/70 outline-none focus:border-[color:var(--accent)]"
+          className="min-w-0 flex-1 h-8 rounded-full border border-ink/10 bg-[#F6F7FB] px-2.5 text-[11.5px] font-semibold text-ink/70 outline-none focus:border-[color:var(--accent)]"
         >
           {statuses.map((s) => <option key={s}>{s}</option>)}
         </select>

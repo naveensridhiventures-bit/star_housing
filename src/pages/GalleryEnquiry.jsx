@@ -12,7 +12,7 @@ import TopBar from "../components/gallery/TopBar";
 const fieldWrap = "relative";
 const fieldIcon = "absolute left-4 top-4 text-ink/40 pointer-events-none";
 const inputCls =
-  "w-full rounded-2xl border border-ink/10 bg-surface pl-12 pr-4 text-[15px] text-ink placeholder:text-ink/40 outline-none transition focus:border-[#FF5C8A] focus:shadow-[0_0_0_3px_rgba(255,92,138,0.22)]";
+  "w-full rounded-2xl border border-ink/10 bg-surface pl-12 pr-4 text-[15px] text-ink placeholder:text-ink/40 outline-none transition focus:border-[#5B3FE0] focus:shadow-[0_0_0_3px_rgba(91,63,224,0.22)]";
 
 /**
  * "Enquiry": a short form about one property. There is no inbox behind it, so
@@ -40,7 +40,7 @@ export default function GalleryEnquiry() {
           {error ? <p className="alert-error max-w-sm mx-auto">{error}</p> : listing === null ? (
             <>
               <p className="font-display font-bold text-xl text-ink">This property isn't available anymore</p>
-              <Link to="/gallery" className="inline-block mt-4 text-[14px] font-bold text-[#9D1148]">See all properties</Link>
+              <Link to="/gallery" className="inline-block mt-4 text-[14px] font-bold text-[#3A24A8]">See all properties</Link>
             </>
           ) : (
             <div className="h-24 max-w-md mx-auto rounded-2xl skeleton" />
@@ -73,7 +73,7 @@ export default function GalleryEnquiry() {
       <div className="max-w-md mx-auto px-4 pt-5 pb-10">
         <Link
           to={`/gallery/${l.id}`}
-          className="flex items-center gap-3.5 rounded-2xl bg-surface ring-1 ring-ink/[0.07] p-3 shadow-[0_8px_22px_-16px_rgba(7,50,58,0.5)]"
+          className="flex items-center gap-3.5 rounded-2xl bg-surface ring-1 ring-ink/[0.07] p-3 shadow-[0_8px_22px_-16px_rgba(15,20,36,0.5)]"
         >
           {cover ? (
             <img src={cover} alt="" className="w-[4.5rem] h-[4.5rem] rounded-xl object-cover shrink-0" />
@@ -161,7 +161,7 @@ export default function GalleryEnquiry() {
 
             <button
               type="submit"
-              className="rip btn-shine w-full h-14 rounded-2xl bg-gradient-to-br from-gold-light via-gold to-[#E8336D] hover:brightness-105 text-ink-dark font-display font-semibold text-[1.05rem] flex items-center justify-center gap-2.5 active:scale-[0.99] transition-[transform,background-color]"
+              className="rip btn-shine w-full h-14 rounded-2xl bg-gradient-to-br from-gold-light via-gold to-[#E8590C] hover:brightness-105 text-ink-dark font-display font-semibold text-[1.05rem] flex items-center justify-center gap-2.5 active:scale-[0.99] transition-[transform,background-color]"
             >
               <Send size={19} />
               Send Enquiry

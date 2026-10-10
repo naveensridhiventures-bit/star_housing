@@ -9,7 +9,7 @@ import { DealForecast, ActivityFeed, DataHealth } from "./OverviewExtras";
 
 // ---------- small visuals ----------
 
-function Sparkline({ values, color = "#FF5C8A" }) {
+function Sparkline({ values, color = "#5B3FE0" }) {
   const max = Math.max(1, ...values);
   const pts = values.map((v, i) => [(i / Math.max(1, values.length - 1)) * 100, 28 - (v / max) * 24]);
   const d = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
@@ -25,7 +25,7 @@ function Delta({ now, before }) {
   if (before === 0 && now === 0) return <span className="text-ink/45">no change</span>;
   const pct = before === 0 ? 100 : Math.round(((now - before) / before) * 100);
   const Icon = pct > 0 ? TrendingUp : pct < 0 ? TrendingDown : Minus;
-  const color = pct > 0 ? "#0B6B66" : pct < 0 ? "#B91C1C" : "#6B7A99";
+  const color = pct > 0 ? "#0B6B49" : pct < 0 ? "#B91C1C" : "#6B7A99";
   return (
     <span className="inline-flex items-center gap-1 font-semibold" style={{ color }}>
       <Icon size={13} />
@@ -78,7 +78,7 @@ function IntakeChart({ days }) {
           >
             <div
               className={`star-bar-stack w-full rounded-t-md overflow-hidden flex flex-col-reverse transition-opacity ${i === sel ? "opacity-100" : "opacity-55 group-hover:opacity-80"}`}
-              style={{ height: `${(d.total / max) * 100}%`, minHeight: d.total ? 4 : 2, animationDelay: `${i * 35}ms`, backgroundColor: d.total ? undefined : "rgba(7,50,58,0.08)" }}
+              style={{ height: `${(d.total / max) * 100}%`, minHeight: d.total ? 4 : 2, animationDelay: `${i * 35}ms`, backgroundColor: d.total ? undefined : "rgba(15,20,36,0.08)" }}
             >
               {parts.map((p) => d[p] > 0 && <div key={p} style={{ flex: d[p], backgroundColor: ROLE_META[p].color }} />)}
             </div>
@@ -202,7 +202,7 @@ function DemandSupply({ overview }) {
       {insights.length > 0 && (
         <div className="mt-5 space-y-2">
           {insights.map((x) => (
-            <p key={x.text} className={`flex gap-2 rounded-2xl px-3.5 py-3 text-[12.5px] leading-snug ${x.tone === "warn" ? "bg-gold/15 text-[#9D1148]" : "bg-teal/10 text-[#0E8C84]"}`}>
+            <p key={x.text} className={`flex gap-2 rounded-2xl px-3.5 py-3 text-[12.5px] leading-snug ${x.tone === "warn" ? "bg-gold/15 text-[#3A24A8]" : "bg-teal/10 text-[#0F8A5F]"}`}>
               <Lightbulb size={15} className="shrink-0 mt-0.5" />
               {x.text}
             </p>
@@ -304,12 +304,12 @@ export default function CommandCenter({ data, loading, error, refresh, refreshin
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <KpiTile label="Total leads" icon={Users} color="#4F46E5" delay={60}
+        <KpiTile label="Total leads" icon={Users} color="#5B3FE0" delay={60}
           sub={`${o.totals.sellers} sellers · ${o.totals.buyers} buyers · ${o.totals.mediators} mediators`}
-          spark={<Sparkline values={sparkVals} color="#4F46E5" />}>
+          spark={<Sparkline values={sparkVals} color="#5B3FE0" />}>
           <CountUp value={o.totals.all} />
         </KpiTile>
-        <KpiTile label="New this week" icon={TrendingUp} color="#0E8C84" delay={110}
+        <KpiTile label="New this week" icon={TrendingUp} color="#0F8A5F" delay={110}
           sub={<Delta now={o.newThisWeek} before={o.newLastWeek} />}>
           <CountUp value={o.newThisWeek} />
         </KpiTile>
@@ -317,12 +317,12 @@ export default function CommandCenter({ data, loading, error, refresh, refreshin
           sub="Buyers & sellers scoring 70+ — worth a call today">
           <CountUp value={o.hotCount} />
         </KpiTile>
-        <KpiTile label="Follow-ups due" icon={CalendarClock} color={o.overdue ? "#DC2626" : "#FF5C8A"} delay={210} alert={o.overdue > 0}
+        <KpiTile label="Follow-ups due" icon={CalendarClock} color={o.overdue ? "#DC2626" : "#5B3FE0"} delay={210} alert={o.overdue > 0}
           onClick={() => onNavigate("today")}
           sub={o.overdue ? <span className="font-semibold text-coral">{o.overdue} overdue · {o.dueToday} today</span> : o.dueToday ? `${o.dueToday} due today` : "All caught up"}>
           <CountUp value={urgent} />
         </KpiTile>
-        <KpiTile label="Listings value" icon={IndianRupee} color="#5B9F96" delay={260}
+        <KpiTile label="Listings value" icon={IndianRupee} color="#7C8AB8" delay={260}
           sub={`Combined asking price of ${o.totals.sellers} seller lead${o.totals.sellers === 1 ? "" : "s"}`}>
           {formatINR(o.pipelineValue)}
         </KpiTile>

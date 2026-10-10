@@ -15,17 +15,14 @@ export default function AboutProperty({ description, sellerNote }) {
   const shownFeatures = allFeatures ? features : features.slice(0, SHOW);
 
   return (
-    <section className="mt-7" aria-label="About this property">
-      <h2 className="font-display font-bold text-[1.2rem] text-ink flex items-center gap-2.5">
-        <span className="w-1 h-5 rounded-full bg-gradient-to-b from-[#FF9DB9] to-[#C0185A]" />
-        About this property
-      </h2>
+    <section className="mt-10" aria-label="About this property">
+      <h2 className="font-display text-[1.5rem] text-ink">About this property</h2>
 
       {shownIntro.length > 0 && (
-        <div className="mt-3 space-y-2 text-[15px] leading-relaxed text-ink/70">
+        <div className="mt-3 space-y-2 text-[16px] leading-relaxed text-ink/75 max-w-prose">
           {shownIntro.map((t) => <p key={t}>{t}</p>)}
           {intro.length > 2 && (
-            <button type="button" onClick={() => setMoreText((v) => !v)} className="text-[13px] font-bold text-[#9D1148] underline underline-offset-2">
+            <button type="button" onClick={() => setMoreText((v) => !v)} className="text-[13px] font-bold text-brand-dark underline underline-offset-2">
               {moreText ? "Show less" : `Read ${intro.length - 2} more line${intro.length - 2 === 1 ? "" : "s"}`}
             </button>
           )}
@@ -35,10 +32,10 @@ export default function AboutProperty({ description, sellerNote }) {
       {features.length > 0 && (
         <>
           <ul className="mt-4 grid grid-cols-1 min-[420px]:grid-cols-2 gap-x-4 gap-y-2.5">
-            {shownFeatures.map((f, i) => (
-              <li key={f} className="fade-up flex items-start gap-2.5 text-[14px] leading-snug text-ink/80" style={{ "--d": `${Math.min(i, 8) * 55}ms` }}>
-                <span className="mt-[1px] w-5 h-5 rounded-full bg-[#FFE6EE] ring-1 ring-[#FF5C8A]/40 flex items-center justify-center shrink-0">
-                  <Check size={12} strokeWidth={3.2} className="text-[#C0185A]" />
+            {shownFeatures.map((f) => (
+              <li key={f} className="flex items-start gap-2.5 text-[14px] leading-snug text-ink/80">
+                <span className="mt-[1px] w-5 h-5 rounded bg-brand-soft flex items-center justify-center shrink-0">
+                  <Check size={12} strokeWidth={3.2} className="text-brand" />
                 </span>
                 {f}
               </li>
@@ -49,7 +46,7 @@ export default function AboutProperty({ description, sellerNote }) {
               type="button"
               onClick={() => setAllFeatures((v) => !v)}
               aria-expanded={allFeatures}
-              className="rip relative overflow-hidden mt-4 h-11 px-5 rounded-full border border-ink/15 text-[13px] font-bold text-ink/75 hover:bg-ink/[0.04] flex items-center gap-1.5 active:scale-95 transition"
+              className="mt-4 h-11 px-4 rounded-lg border border-line bg-white text-[13px] font-bold text-ink/75 hover:bg-ink/[0.04] flex items-center gap-1.5 active:scale-95 transition"
             >
               {allFeatures ? "Show fewer" : `Show all ${features.length} features`}
               <ChevronDown size={15} className={`transition-transform duration-300 ${allFeatures ? "rotate-180" : ""}`} />

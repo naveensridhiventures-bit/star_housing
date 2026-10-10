@@ -40,9 +40,9 @@ export default function EmiCalculator({ price }) {
   const pLen = C * principalShare;
 
   return (
-    <section className="rounded-3xl bg-surface ring-1 ring-ink/[0.07] p-5 shadow-[0_10px_30px_-22px_rgba(3,30,35,0.5)]" aria-label="EMI calculator">
+    <section className="rounded-3xl bg-surface ring-1 ring-ink/[0.07] p-5 shadow-[0_10px_30px_-22px_rgba(9,12,23,0.5)]" aria-label="EMI calculator">
       <div className="flex items-center gap-2.5">
-        <span className="w-9 h-9 rounded-xl bg-[#FFE6EE] text-[#C0185A] flex items-center justify-center"><Calculator size={18} /></span>
+        <span className="w-9 h-9 rounded-xl bg-[#EEEAFE] text-[#432BC2] flex items-center justify-center"><Calculator size={18} /></span>
         <div>
           <h2 className="font-display font-bold text-[1.1rem] text-ink leading-none">Plan your EMI</h2>
           <p className="text-[12px] text-ink/50 mt-1">Slide to match your loan</p>
@@ -51,15 +51,15 @@ export default function EmiCalculator({ price }) {
 
       <div className="mt-5 flex items-center gap-5">
         <svg viewBox="0 0 100 100" className="w-28 h-28 shrink-0 -rotate-90" role="img" aria-label={`Principal ${Math.round(principalShare * 100)} percent, interest ${Math.round((1 - principalShare) * 100)} percent`}>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="#FF5C8A" strokeWidth="11" />
-          <circle cx="50" cy="50" r="42" fill="none" stroke="#07323A" strokeWidth="11" strokeDasharray={`${pLen} ${C}`} strokeLinecap="butt" style={{ transition: "stroke-dasharray .5s ease" }} />
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#5B3FE0" strokeWidth="11" />
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#0F1424" strokeWidth="11" strokeDasharray={`${pLen} ${C}`} strokeLinecap="butt" style={{ transition: "stroke-dasharray .5s ease" }} />
         </svg>
         <div className="min-w-0">
           <p className="text-[11px] font-bold uppercase tracking-wider text-ink/45">Monthly EMI</p>
           <p className="font-display font-bold text-[1.9rem] leading-none text-ink tabular-nums mt-1.5">{inr(r.emi)}</p>
           <p className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-ink/60">
-            <span className="flex items-center gap-1.5"><i className="w-2.5 h-2.5 rounded-full bg-[#07323A]" />Loan {inrShort(loan)}</span>
-            <span className="flex items-center gap-1.5"><i className="w-2.5 h-2.5 rounded-full bg-[#FF5C8A]" />Interest {inrShort(r.interest)}</span>
+            <span className="flex items-center gap-1.5"><i className="w-2.5 h-2.5 rounded-full bg-[#0F1424]" />Loan {inrShort(loan)}</span>
+            <span className="flex items-center gap-1.5"><i className="w-2.5 h-2.5 rounded-full bg-[#5B3FE0]" />Interest {inrShort(r.interest)}</span>
           </p>
         </div>
       </div>

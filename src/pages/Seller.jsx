@@ -70,7 +70,7 @@ function ListingStrength({ form }) {
   const pct = Math.round(50 + (filled / BOOST_KEYS.length) * 50);
   const label = pct < 60 ? "Basic listing" : pct < 80 ? "Good listing" : pct < 95 ? "Strong listing" : "Complete listing";
   return (
-    <div className="mb-6 rounded-2xl bg-[#F2F8F5] ring-1 ring-ink/[0.06] p-4" role="status" aria-label={`Listing strength ${pct} percent`}>
+    <div className="mb-6 rounded-2xl bg-[#F6F7FB] ring-1 ring-ink/[0.06] p-4" role="status" aria-label={`Listing strength ${pct} percent`}>
       <div className="flex items-baseline justify-between">
         <span className="font-display font-bold text-[1.05rem] text-ink">{label}</span>
         <span className="font-display font-bold text-[1.25rem] tabular-nums" style={{ color: "var(--accent)" }}>{pct}%</span>

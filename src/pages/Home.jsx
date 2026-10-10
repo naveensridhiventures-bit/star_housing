@@ -1,283 +1,273 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Handshake, User, Search, Image as ImageIcon, MessageCircle, ArrowRight, Lock, UserCheck, ClipboardCheck } from "lucide-react";
-import Reveal from "../components/Reveal";
-import RotatingWords from "../components/home/RotatingWords";
+import { Handshake, User, Search, MessageCircle, ArrowRight, Lock, UserCheck, ClipboardCheck, Check, TrendingUp, House, Building2, MapPinned, Store } from "lucide-react";
+import SiteNav from "../components/SiteNav";
+import SiteFooter from "../components/SiteFooter";
 import SearchDock from "../components/home/SearchDock";
-import FreshRail from "../components/home/FreshRail";
-import LiveStats from "../components/home/LiveStats";
-import TileStrip from "../components/TileStrip";
-import TileReveal from "../components/TileReveal";
-import Logo from "../components/Logo";
+import PropertyCard from "../components/gallery/PropertyCard";
+import CountUp from "../components/gallery/CountUp";
 import useProperties from "../lib/useProperties";
-import { tileUri } from "../lib/tiles";
+import useFavorites from "../lib/useFavorites";
+import { typeKind, inrShort } from "../lib/gallery";
 import { whatsappLink } from "../lib/whatsapp";
-import { ADMIN_WHATSAPP_NUMBER, APP_NAME, COMPANY_NAME } from "../lib/config";
-import { HERO_IMAGE } from "../lib/brand";
+import { ADMIN_WHATSAPP_NUMBER } from "../lib/config";
 
-const ROLE_WORDS = ["buy a home.", "sell a flat.", "find a plot.", "list a shop.", "close a deal."];
 const WA_HI = "Hi Star Housing, I'd like to know more about your properties.";
 
 const ROLES = [
-  { to: "/seller", title: "I'm a seller", desc: "List your property and meet genuine buyers.", Icon: User, bg: "#0B6B66", motif: "diamonds" },
-  { to: "/buyer", title: "I'm a buyer", desc: "Tell us what you need. We find the matches.", Icon: Search, bg: "#C81F5B", motif: "flower" },
-  { to: "/mediator", title: "I'm a mediator", desc: "Join the network and close better deals.", Icon: Handshake, bg: "#4338CA", motif: "corners" },
+  { to: "/buyer", title: "Buyers", Icon: Search, color: "#E8590C", cta: "Tell us what you need", points: ["Share your budget, area and type", "We shortlist matching properties", "Visit only what fits"] },
+  { to: "/seller", title: "Sellers", Icon: User, color: "#0F8A5F", cta: "List your property", points: ["Add details and photos in minutes", "Phone number and address stay private", "Meet buyers who are actually looking"] },
+  { to: "/mediator", title: "Mediators", Icon: Handshake, color: "#5B3FE0", cta: "Join the network", points: ["Bring your buyers and sellers", "Work from one shared pipeline", "Close more deals with our team"] },
 ];
 
 const WHY = [
-  { Icon: ClipboardCheck, title: "A person reads every request", text: "Nothing is automated away. Our team looks at each listing and each requirement before anything happens.", tint: "#0E8C84" },
-  { Icon: Lock, title: "Your details stay private", text: "Listings never show a seller's phone number or exact address.", tint: "#4F46E5" },
-  { Icon: UserCheck, title: "A real person on WhatsApp", text: "Ask questions, share requirements and move ahead without a call centre.", tint: "#E8336D" },
+  { Icon: ClipboardCheck, title: "Every request is read by a person", text: "Nothing is automated away. Our team reviews each listing and each requirement before anything happens." },
+  { Icon: Lock, title: "Your details stay private", text: "Listings never show a seller's phone number or exact address." },
+  { Icon: UserCheck, title: "A real person on WhatsApp", text: "Ask questions, share requirements and move ahead without a call centre." },
 ];
 
 const STEPS = [
   { title: "Tell us what you need", text: "Fill in a short form. It takes about a minute." },
-  { title: "We review and match", text: "Our team checks every request and contacts you with matching properties." },
-  { title: "Talk to us on WhatsApp", text: "Ask questions and move ahead with a real person on the other end." },
+  { title: "We review and match", text: "Our team checks each request and contacts you with matching properties." },
+  { title: "Talk on WhatsApp", text: "Ask questions and move ahead with a real person on the other end." },
 ];
 
-function RoleCard({ role }) {
-  const { to, title, desc, Icon, bg, motif } = role;
-  const pattern = tileUri(motif, { bg: "transparent", a: "rgba(255,255,255,0.17)", b: "rgba(255,255,255,0.08)" });
-  return (
-    <Link
-      to={to}
-      className="role-card group relative isolate overflow-hidden flex items-center gap-4 rounded-2xl p-4 sm:p-5 md:flex-col md:items-start md:justify-between md:min-h-[15rem] md:p-6 text-white active:translate-y-0.5 transition-transform"
-      style={{ background: bg, boxShadow: "0 5px 0 0 rgba(3,30,35,0.85)" }}
-    >
-      <span className="absolute -z-10 -right-1/4 -top-1/4 w-[85%] h-[150%] md:w-[110%] md:h-[75%] md:-right-[15%] md:-top-[12%] overflow-hidden" aria-hidden="true">
-        <span className="tile-turn block w-[140%] h-[140%]" style={{ backgroundImage: pattern, backgroundSize: "64px 64px" }} />
-      </span>
-      <span className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl bg-white text-ink flex items-center justify-center">
-        <Icon size={26} strokeWidth={2.2} />
-      </span>
-      <span className="flex-1 min-w-0 md:flex-none">
-        <span className="block font-display font-extrabold text-[1.6rem] sm:text-[1.9rem] leading-none">{title}</span>
-        <span className="block text-[14.5px] leading-snug text-white/85 mt-1.5 md:max-w-[15rem]">{desc}</span>
-      </span>
-      <span className="shrink-0 w-10 h-10 rounded-lg bg-white/15 group-hover:bg-white group-hover:text-ink flex items-center justify-center transition-colors md:absolute md:right-5 md:bottom-5" aria-hidden="true">
-        <ArrowRight size={20} strokeWidth={2.6} />
-      </span>
-    </Link>
-  );
-}
-
-function Nav() {
-  return (
-    <nav className="absolute z-30 inset-x-0 top-0 flex items-start justify-between gap-3 px-3 sm:px-6" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }} aria-label="Main">
-      <Link to="/" className="flex items-center gap-2.5 rounded-xl bg-white/90 backdrop-blur px-3 py-2 shadow-soft" aria-label={`${APP_NAME} home`}>
-        <Logo size={34} />
-        <span className="font-display font-extrabold text-[15px] leading-none text-ink hidden sm:block">{APP_NAME}</span>
-      </Link>
-      <div className="flex items-center gap-1 rounded-xl bg-white/90 backdrop-blur p-1 shadow-soft text-[14px] font-bold text-ink">
-        <Link to="/gallery" className="px-3 py-2 rounded-lg hover:bg-ink hover:text-white transition-colors">Gallery</Link>
-        <Link to="/buyer" className="px-3 py-2 rounded-lg hover:bg-ink hover:text-white transition-colors hidden sm:block">Buy</Link>
-        <Link to="/seller" className="px-3 py-2 rounded-lg hover:bg-ink hover:text-white transition-colors hidden sm:block">Sell</Link>
-        <Link to="/mediator" className="px-3 py-2 rounded-lg bg-gold text-ink-dark hover:brightness-105 transition">Join us</Link>
-      </div>
-    </nav>
-  );
-}
+const KINDS = [
+  { key: "house", label: "Houses & villas", Icon: House },
+  { key: "apartment", label: "Apartments", Icon: Building2 },
+  { key: "plot", label: "Plots & land", Icon: MapPinned },
+  { key: "commercial", label: "Commercial", Icon: Store },
+];
 
 export default function Home() {
   const { properties, error } = useProperties();
-  const hasListings = !!properties && properties.some((p) => !p.sold && p.images.length > 0);
+  const { has, toggle } = useFavorites();
   const [showChat, setShowChat] = useState(false);
-  const [reveal, setReveal] = useState(() => {
-    try {
-      return !sessionStorage.getItem("star_tiles_seen") && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    } catch {
-      return false;
-    }
-  });
-  const [wide, setWide] = useState(() => (typeof window === "undefined" ? true : window.innerWidth >= 768));
-
-  const doneReveal = useCallback(() => {
-    try { sessionStorage.setItem("star_tiles_seen", "1"); } catch { /* storage may be unavailable */ }
-    setReveal(false);
-  }, []);
 
   useEffect(() => {
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setShowChat(window.scrollY > 520));
-    };
-    const onResize = () => setWide(window.innerWidth >= 768);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    const onScroll = () => setShowChat(window.scrollY > 600);
     onScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(raf);
-    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const live = useMemo(() => (properties || []).filter((p) => !p.sold && p.images.length > 0), [properties]);
+  const featured = live.slice(0, 6);
+  const areas = useMemo(() => new Set(live.map((p) => p.area).filter(Boolean)), [live]);
+  const prices = live.map((p) => p.priceNum).filter(Boolean);
+  const counts = useMemo(() => {
+    const c = {};
+    live.forEach((p) => { const k = typeKind(p.type); c[k] = (c[k] || 0) + 1; });
+    return c;
+  }, [live]);
+  const newest = live[0];
+
   return (
-    <div>
-      {/* ---------- The photo, shown whole ---------- */}
-      <header className="relative bg-ink-dark">
-        <div className="relative aspect-[79/72] md:aspect-[5/2] overflow-hidden">
-          <picture>
-            <source media="(min-width: 768px)" srcSet="/brand/cover.jpg" />
-            <img
-              src="/brand/globe.jpg"
-              alt="A Star Housing mediator holding the world in his hands, with apartments, a villa and a map pin on it"
-              className="absolute inset-0 w-full h-full"
-              width="790"
-              height="720"
-              decoding="async"
-              fetchPriority="high"
-            />
-          </picture>
-          <Nav />
-          {reveal && <TileReveal cols={wide ? 12 : 6} rows={wide ? 5 : 6} onDone={doneReveal} />}
-        </div>
-        <TileStrip kind="corners" palette="ink" size={28} />
-      </header>
+    <div className="bg-canvas">
+      <SiteNav />
 
-      {/* ---------- Headline band ---------- */}
-      <section className="bg-ink text-white">
-        <div className="max-w-6xl mx-auto px-5 pt-10 pb-32 sm:pb-36 grid md:grid-cols-[1.3fr_1fr] gap-8 md:gap-12 items-end">
-          <h1 className="font-display font-extrabold text-[3.1rem] sm:text-[4.6rem] md:text-[5.2rem] lg:text-[6.3rem] leading-[0.88] tracking-tight">
-            Your dream.
-            <br />
-            Our priority.
-          </h1>
-          <div>
-            <p className="text-white/70 text-[17px]">The trusted way to</p>
-            <p className="font-display font-bold text-[2rem] sm:text-[2.4rem] leading-tight text-gold-light mt-0.5">
-              <RotatingWords words={ROLE_WORDS} />
+      {/* ---------- Hero ---------- */}
+      <header className="bg-white border-b border-line">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-14 grid lg:grid-cols-[1.05fr_1fr] gap-8 lg:gap-14 items-center">
+          <div className="order-2 lg:order-1">
+            <p className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-brand bg-brand-soft rounded-full px-3 py-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand" aria-hidden="true" /> Real people. Real properties.
             </p>
-            <p className="mt-3 text-white/80 text-[16px] leading-relaxed max-w-sm">
-              Tell us what you need. We read every request and reply on WhatsApp.
+            <h1 className="mt-5 font-display text-[3rem] sm:text-[4.2rem] lg:text-[4.9rem] leading-[0.98] tracking-tight text-ink">
+              Your dream.<br />Our priority.
+            </h1>
+            <p className="mt-5 text-[17.5px] leading-relaxed text-ink/70 max-w-lg">
+              Buy, sell or list a property through a team that reads every request and replies on WhatsApp.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/gallery" className="btn-gold">Browse properties <ArrowRight size={18} /></Link>
-              <a href={whatsappLink(ADMIN_WHATSAPP_NUMBER, WA_HI)} target="_blank" rel="noreferrer" className="btn-outline-light">
-                <MessageCircle size={18} /> Chat on WhatsApp
-              </a>
+            <div className="mt-8 max-w-2xl">
+              <SearchDock properties={properties} />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Everything else sits on the mint wall ---------- */}
-      <section className="relative z-10 pb-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-5">
-          <div className="relative z-20 -mt-[5.5rem] sm:-mt-24">
-            <SearchDock properties={properties} />
-          </div>
-          <FreshRail properties={properties} />
-          <LiveStats properties={properties} />
-
-          <Reveal direction="up" distance={14} className="mt-16">
-            <h2 className="font-display font-extrabold text-[2.2rem] sm:text-5xl leading-none text-ink">How can we help you today?</h2>
-            <p className="text-[16px] text-ink/65 mt-3 max-w-md">Pick the option that fits you. It only takes a minute.</p>
-          </Reveal>
-
-          <div className="mt-7 grid gap-4 md:grid-cols-3">
-            {ROLES.map((role, i) => (
-              <Reveal key={role.to} delay={i * 90} distance={22} className="h-full">
-                <RoleCard role={role} />
-              </Reveal>
-            ))}
-          </div>
-
-          {(error || (properties && !hasListings)) && (
-            <Link
-              to="/gallery"
-              className="group relative isolate overflow-hidden mt-4 flex items-center gap-4 rounded-2xl bg-ink-dark p-4 sm:p-5 text-white"
-              style={{ boxShadow: "0 5px 0 0 rgba(3,30,35,0.85)" }}
-            >
-              <img src={HERO_IMAGE} alt="" aria-hidden="true" className="absolute inset-0 -z-10 w-full h-full object-cover opacity-30" loading="lazy" />
-              <span className="w-12 h-12 shrink-0 rounded-xl bg-white text-ink flex items-center justify-center"><ImageIcon size={24} strokeWidth={2.2} /></span>
-              <span className="flex-1 min-w-0">
-                <span className="block font-display font-extrabold text-[1.5rem] leading-tight">Browse the property gallery</span>
-                <span className="block text-[14.5px] text-white/75 mt-0.5">See listings shared by our sellers.</span>
-              </span>
-              <ArrowRight size={22} className="shrink-0 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          )}
-
-          {/* Why: three plain facts, ruled like a ledger instead of boxed */}
-          <section className="mt-20" aria-labelledby="why-title">
-            <h2 id="why-title" className="font-display font-extrabold text-[2.2rem] sm:text-5xl leading-none text-ink">Why people use us</h2>
-            <div className="mt-8 grid md:grid-cols-3 border-t-[3px] border-ink">
-              {WHY.map(({ Icon, title, text, tint }, i) => (
-                <Reveal key={title} delay={i * 90} distance={18} className={`py-6 md:px-6 md:first:pl-0 md:last:pr-0 border-b-2 border-ink/10 md:border-b-0 ${i > 0 ? "md:border-l-2 md:border-l-ink/10" : ""}`}>
-                  <span className="w-11 h-11 rounded-lg flex items-center justify-center text-white" style={{ background: tint }}>
-                    <Icon size={22} strokeWidth={2.2} />
-                  </span>
-                  <h3 className="mt-4 font-display font-bold text-[1.35rem] leading-tight text-ink">{title}</h3>
-                  <p className="mt-2 text-[15.5px] leading-relaxed text-ink/70 max-w-sm">{text}</p>
-                </Reveal>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-[14.5px] text-ink/70">
+              {["Private seller details", "Reviewed by a person", "Free to enquire"].map((t) => (
+                <span key={t} className="inline-flex items-center gap-1.5"><Check size={16} className="text-teal" strokeWidth={2.6} /> {t}</span>
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* How: this one really is a sequence, so it is numbered */}
-          <section className="mt-20" aria-labelledby="how-title">
-            <h2 id="how-title" className="font-display font-extrabold text-[2.2rem] sm:text-5xl leading-none text-ink">How it works</h2>
-            <ol className="mt-8 grid md:grid-cols-3 gap-6 md:gap-8">
-              {STEPS.map((s, i) => (
-                <li key={s.title} className="relative flex md:flex-col gap-4">
-                  <span className="relative shrink-0 w-14 h-14 rounded-xl bg-ink text-gold-light font-display font-extrabold text-[1.7rem] flex items-center justify-center" style={{ boxShadow: "0 4px 0 0 #0E8C84" }}>
-                    {i + 1}
-                  </span>
-                  {i < STEPS.length - 1 && <span className="hidden md:block absolute left-16 right-0 top-7 border-t-2 border-dashed border-ink/25" aria-hidden="true" />}
+          <div className="order-1 lg:order-2 relative">
+            <div className="curtain rounded-2xl ring-1 ring-line bg-sky/30" style={{ aspectRatio: "790 / 720" }}>
+              <img
+                src="/brand/globe.jpg"
+                alt="A Star Housing mediator holding the world in his hands, with apartments, a villa and a map pin on it"
+                className="w-full h-full block"
+                width="790"
+                height="720"
+                decoding="async"
+                fetchPriority="high"
+              />
+            </div>
+            {live.length > 0 && (
+              <>
+                <div className="rise absolute -left-2 sm:-left-5 bottom-6 sm:bottom-10 bg-white rounded-xl shadow-lift border border-line px-4 py-3" style={{ "--base": "1100ms" }}>
+                  <p className="font-display text-[1.9rem] leading-none text-ink tabular-nums"><CountUp value={live.length} duration={1100} /></p>
+                  <p className="text-[12.5px] text-ink/60 mt-1">{live.length === 1 ? "property listed" : "properties listed"}</p>
+                </div>
+                {newest && (
+                  <Link to={`/gallery/${newest.id}`} className="rise hidden sm:flex absolute -right-3 top-8 bg-white rounded-xl shadow-lift border border-line p-2 pr-4 items-center gap-3 max-w-[16rem] hover:border-brand transition-colors" style={{ "--base": "1300ms" }}>
+                    <img src={newest.images[0]} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                    <span className="min-w-0">
+                      <span className="block text-[12px] text-brand font-semibold">Just listed</span>
+                      <span className="block text-[14px] font-semibold text-ink truncate">{newest.title}</span>
+                      <span className="block text-[12.5px] text-ink/60 truncate">{newest.price || newest.area}</span>
+                    </span>
+                  </Link>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ---------- Market strip ---------- */}
+      {live.length > 0 && (
+        <section className="bg-ink-dark text-white" aria-label="Market snapshot">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-6">
+            <div><p className="font-display text-[1.7rem] leading-none tabular-nums"><CountUp value={live.length} /></p><p className="text-[13px] text-white/60 mt-1">Properties available</p></div>
+            <div><p className="font-display text-[1.7rem] leading-none tabular-nums"><CountUp value={areas.size} /></p><p className="text-[13px] text-white/60 mt-1">Areas covered</p></div>
+            <div><p className="font-display text-[1.7rem] leading-none">{prices.length > 1 ? `${inrShort(Math.min(...prices))} – ${inrShort(Math.max(...prices))}` : prices.length === 1 ? inrShort(prices[0]) : "On request"}</p><p className="text-[13px] text-white/60 mt-1">Price range</p></div>
+            <div><p className="font-display text-[1.7rem] leading-none flex items-center gap-2"><TrendingUp size={22} className="text-brand-light" /> Updated daily</p><p className="text-[13px] text-white/60 mt-1">Fresh listings from sellers</p></div>
+          </div>
+        </section>
+      )}
+
+      <main>
+        {/* ---------- Featured ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20" aria-labelledby="feat-title">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 id="feat-title" className="font-display text-[2.1rem] sm:text-[2.7rem] leading-tight text-ink">New on the market</h2>
+              <p className="mt-1.5 text-[16px] text-ink/65">Fresh listings from our sellers.</p>
+            </div>
+            <Link to="/gallery" className="btn-ghost !py-2.5 !px-4 text-[14.5px] shrink-0">View all <ArrowRight size={16} /></Link>
+          </div>
+          {properties === null && !error ? (
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
+              {[0, 1, 2].map((i) => <div key={i} className="h-[26rem] rounded-2xl skeleton" />)}
+            </div>
+          ) : featured.length > 0 ? (
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((l, i) => <PropertyCard key={l.id} l={l} index={i} saved={has(l.id)} onToggleSaved={() => toggle(l.id)} />)}
+            </div>
+          ) : (
+            <div className="mt-8 card p-8 text-center">
+              <p className="font-display text-[1.5rem] text-ink">Listings will appear here</p>
+              <p className="mt-1.5 text-ink/65">Be the first to list a property with us.</p>
+              <Link to="/seller" className="btn-primary mt-5">List your property</Link>
+            </div>
+          )}
+        </section>
+
+        {/* ---------- Browse by type ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24" aria-labelledby="type-title">
+          <h2 id="type-title" className="font-display text-[2.1rem] sm:text-[2.7rem] leading-tight text-ink">Browse by property type</h2>
+          <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {KINDS.map(({ key, label, Icon }) => (
+              <Link key={key} to="/gallery" className="group card p-5 sm:p-6 flex flex-col gap-10 hover:border-brand hover:-translate-y-0.5 transition-all">
+                <span className="w-12 h-12 rounded-lg bg-brand-soft text-brand flex items-center justify-center group-hover:bg-brand group-hover:text-white transition-colors"><Icon size={24} strokeWidth={1.8} /></span>
+                <span>
+                  <span className="block font-display text-[1.3rem] leading-tight text-ink">{label}</span>
+                  <span className="block text-[14px] text-ink/60 mt-1">{counts[key] ? `${counts[key]} available` : "Browse listings"}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Roles ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24" aria-labelledby="role-title">
+          <h2 id="role-title" className="font-display text-[2.1rem] sm:text-[2.7rem] leading-tight text-ink max-w-xl">How can we help you today?</h2>
+          <div className="mt-8 grid md:grid-cols-3 gap-5">
+            {ROLES.map(({ to, title, Icon, color, cta, points }) => (
+              <article key={to} className="bg-white rounded-2xl border border-line overflow-hidden flex flex-col" style={{ borderTop: `4px solid ${color}` }}>
+                <div className="p-6 flex-1">
+                  <span className="w-11 h-11 rounded-lg flex items-center justify-center text-white" style={{ background: color }}><Icon size={22} /></span>
+                  <h3 className="mt-5 font-display text-[1.7rem] leading-tight text-ink">For {title.toLowerCase()}</h3>
+                  <ul className="mt-4 space-y-2.5">
+                    {points.map((p) => (
+                      <li key={p} className="flex gap-2.5 text-[15.5px] text-ink/75 leading-snug"><Check size={18} className="shrink-0 mt-0.5" style={{ color }} strokeWidth={2.6} />{p}</li>
+                    ))}
+                  </ul>
+                </div>
+                <Link to={to} className="m-6 mt-0 h-12 rounded-lg border-2 font-semibold text-[15px] flex items-center justify-center gap-2 transition-colors hover:text-white" style={{ borderColor: color, color }} onMouseEnter={(e) => { e.currentTarget.style.background = color; }} onMouseLeave={(e) => { e.currentTarget.style.background = ""; }}>
+                  {cta} <ArrowRight size={17} />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Why us ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24" aria-labelledby="why-title">
+          <div className="grid lg:grid-cols-[1fr_1.6fr] gap-8 lg:gap-14">
+            <div>
+              <h2 id="why-title" className="font-display text-[2.1rem] sm:text-[2.7rem] leading-tight text-ink">Why people use us</h2>
+              <p className="mt-3 text-[16.5px] text-ink/65 max-w-sm">A smaller, more careful way to deal in property.</p>
+            </div>
+            <ul className="divide-y divide-line border-y border-line">
+              {WHY.map(({ Icon, title, text }) => (
+                <li key={title} className="py-6 flex gap-5">
+                  <span className="w-11 h-11 shrink-0 rounded-full bg-brand-soft text-brand flex items-center justify-center"><Icon size={21} /></span>
                   <div>
-                    <h3 className="font-display font-bold text-[1.35rem] leading-tight text-ink">{s.title}</h3>
-                    <p className="text-[15.5px] text-ink/70 leading-relaxed mt-1.5 max-w-xs">{s.text}</p>
+                    <h3 className="font-display text-[1.3rem] leading-tight text-ink">{title}</h3>
+                    <p className="mt-1.5 text-[15.5px] text-ink/70 leading-relaxed max-w-lg">{text}</p>
                   </div>
                 </li>
               ))}
-            </ol>
-          </section>
-        </div>
-      </section>
+            </ul>
+          </div>
+        </section>
 
-      {/* ---------- Closing band + footer ---------- */}
-      <footer className="bg-ink text-white">
-        <TileStrip kind="diamonds" palette="ink" size={28} />
-        <div className="max-w-6xl mx-auto px-5 py-14 sm:py-20 grid md:grid-cols-[1.25fr_1fr] gap-8 md:gap-14 items-center">
-          <h2 className="font-display font-extrabold text-[3rem] sm:text-[4.4rem] leading-[0.92]">Ready when you are.</h2>
-          <div>
-            <p className="text-white/80 text-[16.5px] leading-relaxed max-w-sm">Fill in a short form. We read every request and reply on WhatsApp.</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/buyer" className="btn-gold">Tell us what you need <ArrowRight size={18} /></Link>
-              <Link to="/seller" className="btn-outline-light">List my property</Link>
+        {/* ---------- How it works ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24" aria-labelledby="how-title">
+          <h2 id="how-title" className="font-display text-[2.1rem] sm:text-[2.7rem] leading-tight text-ink">How it works</h2>
+          <ol className="mt-8 grid md:grid-cols-3 gap-0 rounded-2xl overflow-hidden border border-line bg-white">
+            {STEPS.map((s, i) => (
+              <li key={s.title} className={`p-6 sm:p-8 ${i > 0 ? "border-t md:border-t-0 md:border-l border-line" : ""}`}>
+                <span className="font-display text-[3.2rem] leading-none text-brand/25">{i + 1}</span>
+                <h3 className="mt-3 font-display text-[1.35rem] leading-tight text-ink">{s.title}</h3>
+                <p className="mt-2 text-[15.5px] text-ink/70 leading-relaxed">{s.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* ---------- Brand banner, shown whole ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24">
+          <div className="rounded-2xl overflow-hidden ring-1 ring-line bg-ink-dark">
+            <img src="/brand/cover.jpg" alt="Star Housing: your dream, our priority" className="w-full h-auto block" width="1800" height="720" loading="lazy" decoding="async" />
+          </div>
+        </section>
+
+        {/* ---------- Closing ---------- */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+          <div className="rounded-2xl bg-brand text-white px-6 sm:px-12 py-10 sm:py-14 grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+            <div>
+              <h2 className="font-display text-[2.2rem] sm:text-[3rem] leading-[1.02]">Ready when you are.</h2>
+              <p className="mt-3 text-white/80 text-[16.5px] max-w-md">Fill in a short form. We read every request and reply on WhatsApp.</p>
+            </div>
+            <div className="flex flex-wrap md:justify-end gap-3">
+              <Link to="/buyer" className="h-12 px-6 rounded-lg bg-white text-brand-dark font-semibold flex items-center gap-2 hover:bg-snow transition-colors">Tell us what you need <ArrowRight size={17} /></Link>
+              <Link to="/seller" className="h-12 px-6 rounded-lg border-2 border-white/60 text-white font-semibold flex items-center hover:bg-white/10 transition-colors">List my property</Link>
             </div>
           </div>
-        </div>
-        <div className="border-t border-white/15">
-          <div className="max-w-6xl mx-auto px-5 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Logo size={38} tone="light" />
-              <p className="text-[13.5px] text-white/70 leading-snug">© {new Date().getFullYear()} {COMPANY_NAME}</p>
-            </div>
-            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-[14.5px] font-semibold text-white/80" aria-label="Footer">
-              <Link to="/gallery" className="hover:text-white">Property gallery</Link>
-              <Link to="/seller" className="hover:text-white">Sell a property</Link>
-              <Link to="/buyer" className="hover:text-white">Buy a property</Link>
-              <Link to="/mediator" className="hover:text-white">Join as mediator</Link>
-            </nav>
-          </div>
-        </div>
-      </footer>
+        </section>
+      </main>
 
-      {/* WhatsApp button, shown once you have scrolled past the photo */}
+      <SiteFooter />
+
       <a
         href={whatsappLink(ADMIN_WHATSAPP_NUMBER, WA_HI)}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with us on WhatsApp"
         tabIndex={showChat ? 0 : -1}
-        className={`fixed right-4 z-30 w-14 h-14 rounded-xl bg-whatsapp text-ink-dark flex items-center justify-center transition-all duration-300 ${
-          showChat ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"
-        }`}
-        style={{ bottom: "max(1rem, env(safe-area-inset-bottom))", boxShadow: "0 4px 0 0 #138A47" }}
+        className={`fixed right-4 z-30 w-14 h-14 rounded-full bg-whatsapp text-white shadow-lift flex items-center justify-center transition-all duration-300 ${showChat ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"}`}
+        style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
       >
         <MessageCircle size={26} />
       </a>

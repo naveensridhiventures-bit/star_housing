@@ -39,7 +39,7 @@ export function DealForecast({ data, onOpenLead, className = "", delay = 0 }) {
       right={
         <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink/50">
           Commission
-          <span className="flex items-center rounded-full border border-ink/15 bg-[#F2F8F5] overflow-hidden">
+          <span className="flex items-center rounded-full border border-ink/15 bg-[#F6F7FB] overflow-hidden">
             <input
               type="number"
               min="0.25"
@@ -61,7 +61,7 @@ export function DealForecast({ data, onOpenLead, className = "", delay = 0 }) {
           <p className="font-display font-bold text-[1.7rem] leading-none mt-2 tabular-nums">{formatINR(f.expected)}</p>
           <p className="text-[11.5px] text-white/55 mt-2">likely, given today's lead scores</p>
         </div>
-        <div className="rounded-2xl bg-[#F2F8F5] p-4">
+        <div className="rounded-2xl bg-[#F6F7FB] p-4">
           <p className="text-[10.5px] font-bold uppercase tracking-wider text-ink/45">If everything sells</p>
           <p className="font-display font-bold text-[1.7rem] leading-none mt-2 text-ink tabular-nums">{formatINR(f.potential)}</p>
           <p className="text-[11.5px] text-ink/50 mt-2">{share}% of it looks realistic</p>
@@ -110,9 +110,9 @@ export function DealForecast({ data, onOpenLead, className = "", delay = 0 }) {
 // ---------- Activity feed ----------
 
 const KIND = {
-  new: { Icon: UserPlus, tint: "#0E8C84", label: "New lead" },
-  remark: { Icon: StickyNote, tint: "#FF5C8A", label: "Note" },
-  visit: { Icon: Footprints, tint: "#4F46E5", label: "Site visit" },
+  new: { Icon: UserPlus, tint: "#0F8A5F", label: "New lead" },
+  remark: { Icon: StickyNote, tint: "#5B3FE0", label: "Note" },
+  visit: { Icon: Footprints, tint: "#5B3FE0", label: "Site visit" },
 };
 
 export function ActivityFeed({ data, onOpenLead, className = "", delay = 0 }) {
@@ -158,8 +158,8 @@ export function ActivityFeed({ data, onOpenLead, className = "", delay = 0 }) {
 function Stat({ icon: Icon, label, value, tone }) {
   const bad = value > 0;
   return (
-    <div className="rounded-2xl bg-[#F2F8F5] p-4 flex items-center gap-3">
-      <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: bad ? `${tone}1F` : "rgba(14,140,132,0.12)", color: bad ? tone : "#0E8C84" }}>
+    <div className="rounded-2xl bg-[#F6F7FB] p-4 flex items-center gap-3">
+      <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: bad ? `${tone}1F` : "rgba(15,138,95,0.12)", color: bad ? tone : "#0F8A5F" }}>
         <Icon size={18} />
       </span>
       <div>
@@ -188,7 +188,7 @@ export function DataHealth({ data, onOpenLead, className = "", delay = 0 }) {
       title="Data health & export"
       subtitle="Clean data makes every score, match and reminder more accurate"
       right={
-        <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold" style={{ color: real.length ? "#B91C1C" : "#0B6B66" }}>
+        <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold" style={{ color: real.length ? "#B91C1C" : "#0B6B49" }}>
           <ShieldCheck size={14} />
           {real.length ? "Needs attention" : "Looking good"}
         </span>
@@ -196,8 +196,8 @@ export function DataHealth({ data, onOpenLead, className = "", delay = 0 }) {
     >
       <div className="grid sm:grid-cols-3 gap-3">
         <Stat icon={Copy} label="Duplicate phone numbers" value={real.length} tone="#DC2626" />
-        <Stat icon={PhoneOff} label="Active leads without a phone" value={h.noPhone} tone="#FF5C8A" />
-        <Stat icon={CalendarX} label="Active leads with no follow-up date" value={h.noFollowUp} tone="#4F46E5" />
+        <Stat icon={PhoneOff} label="Active leads without a phone" value={h.noPhone} tone="#5B3FE0" />
+        <Stat icon={CalendarX} label="Active leads with no follow-up date" value={h.noFollowUp} tone="#5B3FE0" />
       </div>
 
       {(real.length > 0 || cross.length > 0) && (

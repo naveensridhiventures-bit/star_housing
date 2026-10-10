@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, AlertTriangle, Pencil, Clock, RotateCcw, Loader2, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, AlertTriangle, Pencil, Clock, RotateCcw, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import BrandHeader from "./BrandHeader";
+import Logo from "../Logo";
+import { APP_NAME } from "../../lib/config";
 import SuccessCheck from "../gallery/SuccessCheck";
 import { STEP_COLORS, textShade } from "../../lib/theme";
 
@@ -220,19 +222,58 @@ export default function Wizard({
   const successAction = atSuccess && success.primary ? success.primary(form) : null;
   const approxMins = Math.max(1, Math.round((n * 12) / 60));
 
+  const stages = [...steps.map((s) => s.label || s.title), "Review"];
+  const stageNow = atLanding ? -1 : atSuccess ? stages.length : pos - 1;
+
   return (
-    <div className="min-h-screen bg-canvas sm:py-8">
+    <div className="min-h-screen bg-canvas lg:grid lg:grid-cols-[26rem_minmax(0,1fr)] xl:grid-cols-[30rem_minmax(0,1fr)]">
+      <aside className="hidden lg:flex sticky top-0 h-screen flex-col relative isolate overflow-hidden bg-ink-dark text-white p-10 xl:p-12">
+        <img src="/brand/globe.jpg" alt="" aria-hidden="true" className="absolute inset-0 -z-10 w-full h-full object-cover opacity-25" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-ink-dark/70 via-ink-dark/80 to-ink-dark" aria-hidden="true" />
+        <Link to="/" className="flex items-center gap-3" aria-label="Star Housing home">
+          <Logo size={40} tone="light" />
+          <span className="font-display font-semibold text-[1.35rem] leading-none">{APP_NAME}</span>
+        </Link>
+        <div className="mt-auto">
+          <p className="text-brand-light text-[14px] font-semibold">{role} registration</p>
+          <h2 className="mt-2 font-display text-[2.4rem] leading-[1.05] text-balance">{landing.title}</h2>
+          <ol className="mt-8 space-y-0" aria-label="Progress">
+            {stages.map((label, i) => {
+              const done = i < stageNow;
+              const here = i === stageNow;
+              return (
+                <li key={label + i} className="flex items-stretch gap-4">
+                  <span className="flex flex-col items-center">
+                    <span
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-[12.5px] font-bold border-2 transition-colors ${
+                        done ? "bg-brand-light border-brand-light text-ink-dark" : here ? "border-white text-white" : "border-white/25 text-white/40"
+                      }`}
+                    >
+                      {done ? <Check size={14} strokeWidth={3} /> : i + 1}
+                    </span>
+                    {i < stages.length - 1 && <span className={`w-0.5 flex-1 min-h-[1rem] ${done ? "bg-brand-light" : "bg-white/20"}`} />}
+                  </span>
+                  <span className={`pb-4 pt-0.5 text-[15px] ${here ? "text-white font-semibold" : done ? "text-white/80" : "text-white/45"}`}>{label}</span>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="mt-4 text-[13px] text-white/55 leading-relaxed">Your answers are saved on this device as you go. A person on our team reads every submission.</p>
+        </div>
+      </aside>
+
+      <div className="min-w-0">
       <div
-        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E3F1EC] sm:shadow-[0_28px_60px_-24px_rgba(7,50,58,0.35)] flex flex-col overflow-x-clip"
+        className="mx-auto w-full max-w-md lg:max-w-xl min-h-[100dvh] lg:min-h-0 lg:my-12 bg-surface lg:rounded-2xl lg:border lg:border-line lg:shadow-soft flex flex-col overflow-x-clip"
         style={{ "--accent": color }}
       >
-        <BrandHeader color={color} className="sm:rounded-t-[2rem]" />
+        <BrandHeader color={color} className="lg:hidden" />
 
         <form onSubmit={onFormSubmit} noValidate className="flex-1 flex flex-col">
           <div key={pos} ref={stepRef} className={`flex-1 px-5 pt-6 pb-8 ${dir >= 0 ? "step-fwd" : "step-back"}`}>
             {/* Progress: a track that fills with a glowing head, plus where you are and time left */}
             {!atLanding && !atSuccess && (
-              <div className="mb-6">
+              <div className="mb-6 lg:hidden">
                 <div className="flex items-center justify-between text-[12.5px] font-semibold mb-2.5">
                   <span style={{ color: textColor }}>{stepWord}</span>
                   <span className="flex items-center gap-1.5 text-ink/45"><Clock size={12} />{timeLeft}</span>
@@ -269,8 +310,8 @@ export default function Wizard({
                 <p className="mt-3 text-[14.5px] text-ink/60 leading-relaxed max-w-xs">{success.text(form)}</p>
 
                 {chipList.length > 0 && (
-                  <div className="receipt-in mt-6 w-full rounded-3xl bg-[#F2F8F5] ring-1 ring-ink/[0.06] p-4 text-left">
-                    <p className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink/55"><ShieldCheck size={14} className="text-[#0B6B66]" /> What we received</p>
+                  <div className="receipt-in mt-6 w-full rounded-3xl bg-[#F6F7FB] ring-1 ring-ink/[0.06] p-4 text-left">
+                    <p className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink/55"><ShieldCheck size={14} className="text-[#0B6B49]" /> What we received</p>
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {chipList.map((c) => <span key={c} className="text-[12.5px] font-semibold rounded-full px-3 py-1 bg-white ring-1 ring-ink/[0.08] text-ink/75">{c}</span>)}
                     </div>
@@ -328,8 +369,8 @@ export default function Wizard({
                 {atLanding && (
                   <div className="mt-6 space-y-3 stagger">
                     {draft && (
-                      <div className="welcome-in rounded-2xl bg-[#FFE6EE] ring-1 ring-[#FF5C8A]/40 p-4">
-                        <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><RotateCcw size={16} className="text-[#C0185A]" /> Welcome back{draft.form.name ? `, ${draft.form.name.trim().split(" ")[0]}` : ""}</p>
+                      <div className="welcome-in rounded-2xl bg-[#EEEAFE] ring-1 ring-[#5B3FE0]/40 p-4">
+                        <p className="font-display font-bold text-[1.05rem] text-ink flex items-center gap-2"><RotateCcw size={16} className="text-[#432BC2]" /> Welcome back{draft.form.name ? `, ${draft.form.name.trim().split(" ")[0]}` : ""}</p>
                         <p className="text-[13.5px] text-ink/60 mt-1">You have an unfinished form on this device. Pick up where you left off?</p>
                         <div className="mt-3 flex gap-2.5">
                           <button type="button" onClick={resume} className="rip h-11 flex-1 rounded-full bg-ink text-white text-[14px] font-bold active:scale-[0.98] transition-transform">Continue</button>
@@ -386,7 +427,7 @@ export default function Wizard({
           {/* Footer: stays pinned to the bottom of the screen on phones */}
           {!atSuccess && (
             <div
-              className="sticky bottom-0 bg-surface/95 backdrop-blur border-t border-ink/5 px-5 pt-3 sm:rounded-b-[2rem]"
+              className="sticky bottom-0 bg-surface/95 backdrop-blur border-t border-ink/5 px-5 pt-3 lg:rounded-b-2xl"
               style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
             >
               {error && (
@@ -451,6 +492,7 @@ export default function Wizard({
             </div>
           )}
         </form>
+      </div>
       </div>
     </div>
   );

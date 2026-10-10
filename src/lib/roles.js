@@ -1,5 +1,5 @@
 export const ROLE_META = {
-  seller: { label: "Seller", plural: "Sellers", color: "#0E8C84" },
+  seller: { label: "Seller", plural: "Sellers", color: "#0F8A5F" },
   buyer: { label: "Buyer", plural: "Buyers", color: "#DC2626" },
-  mediator: { label: "Mediator", plural: "Mediators", color: "#4F46E5" },
+  mediator: { label: "Mediator", plural: "Mediators", color: "#5B3FE0" },
 };

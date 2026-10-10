@@ -144,10 +144,10 @@ export default function AdminFieldVisit() {
   return (
     <div className="min-h-screen bg-canvas sm:py-8">
       <div
-        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E3F1EC] sm:shadow-[0_28px_60px_-24px_rgba(7,50,58,0.35)]"
+        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-2xl sm:border sm:border-line sm:shadow-soft"
         style={{ "--accent": COLORS.teal }}
       >
-        <BrandHeader color={COLORS.teal} className="sm:rounded-t-[2rem]" />
+        <BrandHeader color={COLORS.teal} className="sm:rounded-t-2xl" />
 
         <div className="px-5 pt-6 pb-8">
           <p className="text-[12px] font-bold uppercase tracking-[0.14em]" style={{ color: COLORS.teal }}>Field visit</p>

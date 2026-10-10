@@ -11,6 +11,8 @@ import { buildTasks, leadsToCsv } from "../lib/insights";
 import { downloadCsv } from "../lib/exportCsv";
 import CommandPalette from "../components/admin/CommandPalette";
 import BrandHeader from "../components/wizard/BrandHeader";
+import Logo from "../components/Logo";
+import { APP_NAME } from "../lib/config";
 import { adminInputCls, btnDark } from "../components/admin/styles";
 import { COLORS } from "../lib/theme";
 import { adminListMediators, adminListSellers, adminListBuyers } from "../lib/api";
@@ -145,7 +147,7 @@ const CRM_CONFIG = {
 };
 
 const TABS = [
-  { key: "overview", label: "Overview", color: "#FF5C8A" },
+  { key: "overview", label: "Overview", color: "#5B3FE0" },
   { key: "today", label: "Today", color: "#DC2626" },
   { key: "seller", label: "Sellers", color: COLORS.teal },
   { key: "buyer", label: "Buyers", color: COLORS.coral },
@@ -165,7 +167,7 @@ const STATUSES_BY_ROLE = {
 };
 
 const headerLink =
-  "h-10 px-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors";
+  "h-10 px-3 rounded-lg border border-line hover:border-ink/40 text-ink text-[12.5px] font-semibold flex items-center gap-1.5 transition-colors";
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState("overview");
@@ -257,8 +259,48 @@ export default function AdminDashboard() {
   const active = CRM_CONFIG[tab];
   const tabColor = TABS.find((t) => t.key === tab)?.color || COLORS.teal;
 
+  const urgentBadge = (on) =>
+    urgentCount > 0 && (
+      <span className={`ml-auto min-w-5 h-5 px-1.5 rounded-full text-[11px] font-bold flex items-center justify-center ${on ? "bg-white text-ink" : "bg-coral text-white"}`}>
+        {urgentCount}
+      </span>
+    );
+
   return (
-    <div className="min-h-screen bg-canvas" style={{ "--accent": tabColor }}>
+    <div className="min-h-screen bg-canvas lg:grid lg:grid-cols-[15.5rem_minmax(0,1fr)]" style={{ "--accent": tabColor }}>
+      {/* Computers: a fixed side menu */}
+      <aside className="hidden lg:flex sticky top-0 h-screen flex-col bg-ink-dark text-white px-3 py-5" aria-label="Admin menu">
+        <Link to="/" className="flex items-center gap-2.5 px-3 mb-6" aria-label="Star Housing home">
+          <Logo size={34} tone="light" />
+          <span className="font-display text-[1.2rem] leading-none">{APP_NAME}</span>
+        </Link>
+        <nav className="flex-1 overflow-y-auto no-scrollbar space-y-0.5" role="tablist" aria-label="Admin sections" aria-orientation="vertical">
+          {TABS.map((t) => {
+            const on = tab === t.key;
+            return (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={on}
+                onClick={() => { setTab(t.key); setJump(null); }}
+                className={`w-full h-11 px-3 rounded-lg text-[14.5px] font-medium flex items-center gap-3 text-left transition-colors ${on ? "bg-white text-ink" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+              >
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: t.color }} />
+                {t.label}
+                {t.key === "today" && urgentBadge(on)}
+              </button>
+            );
+          })}
+        </nav>
+        <nav className="pt-4 mt-2 border-t border-white/15 space-y-0.5" aria-label="Admin shortcuts">
+          <Link to="/control/field-visit" className="h-10 px-3 rounded-lg text-[14px] text-white/70 hover:bg-white/10 hover:text-white flex items-center gap-3"><MapPin size={16} /> Field visit</Link>
+          <Link to="/gallery" className="h-10 px-3 rounded-lg text-[14px] text-white/70 hover:bg-white/10 hover:text-white flex items-center gap-3"><ImageIcon size={16} /> Buyer gallery</Link>
+          <button onClick={logout} className="w-full h-10 px-3 rounded-lg text-[14px] text-white/70 hover:bg-white/10 hover:text-white flex items-center gap-3"><LogOut size={16} /> Log out</button>
+        </nav>
+      </aside>
+
+      <div className="min-w-0">
+      <div className="lg:hidden">
       <BrandHeader
         color={tabColor}
         wide
@@ -279,11 +321,12 @@ export default function AdminDashboard() {
           </nav>
         }
       />
+      </div>
 
-      <div className="max-w-6xl mx-auto px-5 pt-6 pb-24">
+      <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-6 pb-24">
         <div className="flex items-end justify-between gap-3 flex-wrap">
           <div>
-            <h1 className="font-display font-bold text-[1.7rem] leading-tight text-ink">Command center</h1>
+            <h1 className="font-display text-[2rem] leading-tight text-ink">Command center</h1>
             {!editingName && (
               <button
                 onClick={() => setEditingName(true)}
@@ -297,7 +340,7 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={() => setPaletteOpen(true)}
-            className="h-11 pl-4 pr-3 rounded-full bg-surface border border-ink/15 hover:border-ink/40 text-[13px] text-ink/60 flex items-center gap-3 transition-colors"
+            className="h-11 pl-4 pr-3 rounded-lg bg-surface border border-line hover:border-ink/40 text-[13px] text-ink/60 flex items-center gap-3 transition-colors"
             aria-label="Search leads and commands"
           >
             <Search size={15} />
@@ -331,7 +374,7 @@ export default function AdminDashboard() {
           </form>
         )}
 
-        <div className="mt-5 flex gap-2 overflow-x-auto no-scrollbar pb-1" role="tablist" aria-label="Admin sections">
+        <div className="mt-5 flex gap-2 overflow-x-auto no-scrollbar pb-1 lg:hidden" role="tablist" aria-label="Admin sections">
           {TABS.map((t) => {
             const on = tab === t.key;
             return (
@@ -389,6 +432,7 @@ export default function AdminDashboard() {
           )}
           {tab === "properties" && <PropertiesTab password={password} />}
         </div>
+      </div>
       </div>
 
       <CommandPalette

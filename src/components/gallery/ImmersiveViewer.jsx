@@ -72,7 +72,7 @@ export default function ImmersiveViewer({ images, startIndex = 0, title, saved, 
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] bg-[#031E23] flex flex-col animate-[lightboxFade_0.2s_ease_both]"
+      className="fixed inset-0 z-[60] bg-[#090C17] flex flex-col animate-[lightboxFade_0.2s_ease_both]"
       role="dialog"
       aria-modal="true"
       aria-label={`${title}, photos`}
@@ -152,7 +152,7 @@ export default function ImmersiveViewer({ images, startIndex = 0, title, saved, 
               onClick={() => setIndex(i)}
               className="shrink-0 flex flex-col items-center gap-1.5"
             >
-              <span className={`block w-[4.6rem] h-[3.4rem] rounded-xl overflow-hidden ring-2 transition ${i === index ? "ring-[#FF9DB9]" : "ring-transparent opacity-70"}`}>
+              <span className={`block w-[4.6rem] h-[3.4rem] rounded-xl overflow-hidden ring-2 transition ${i === index ? "ring-[#A99BFF]" : "ring-transparent opacity-70"}`}>
                 <img src={optimizedImageUrl(src, 200)} alt="" className="w-full h-full object-cover" draggable={false} />
               </span>
               <span className={`text-[11px] font-semibold ${i === index ? "text-white" : "text-white/55"}`}>Photo {i + 1}</span>

@@ -76,7 +76,7 @@ export default function CommandPalette({ open, onClose, data, tabs, actions, onG
   return (
     <div className="fixed inset-0 z-[80] flex items-start justify-center px-4 pt-[12vh]" role="dialog" aria-modal="true" aria-label="Search and commands">
       <button type="button" aria-label="Close search" onClick={onClose} className="absolute inset-0 bg-ink-dark/55 backdrop-blur-[3px] star-fade" />
-      <div className="relative w-full max-w-xl rounded-3xl bg-surface border border-ink/10 shadow-[0_30px_80px_-20px_rgba(3,30,35,0.6)] overflow-hidden star-pop">
+      <div className="relative w-full max-w-xl rounded-3xl bg-surface border border-ink/10 shadow-[0_30px_80px_-20px_rgba(9,12,23,0.6)] overflow-hidden star-pop">
         <div className="flex items-center gap-3 px-5 border-b border-ink/10">
           <Search size={18} className="text-ink/40 shrink-0" />
           <input
@@ -146,7 +146,7 @@ export default function CommandPalette({ open, onClose, data, tabs, actions, onG
           })}
         </div>
 
-        <div className="flex items-center gap-4 px-5 py-2.5 border-t border-ink/10 bg-[#F2F8F5] text-[11px] text-ink/45">
+        <div className="flex items-center gap-4 px-5 py-2.5 border-t border-ink/10 bg-[#F6F7FB] text-[11px] text-ink/45">
           <span className="flex items-center gap-1.5"><kbd className="border border-ink/15 rounded px-1">↑↓</kbd> move</span>
           <span className="flex items-center gap-1.5"><CornerDownLeft size={11} /> open</span>
           <span className="ml-auto hidden sm:block">Tip: search a phone number or area</span>

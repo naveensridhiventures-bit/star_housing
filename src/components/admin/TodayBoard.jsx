@@ -10,9 +10,9 @@ const SHEET = { seller: "Sellers", buyer: "Buyers", mediator: "Mediators" };
 
 const SECTIONS = [
   { key: "overdue", title: "Overdue", color: "#DC2626", hint: "Past their follow-up date — oldest first" },
-  { key: "today", title: "Due today", color: "#FF5C8A", hint: "Scheduled for today" },
-  { key: "soon", title: "Coming up", color: "#4F46E5", hint: "Due in the next 3 days" },
-  { key: "needsDate", title: "Needs a follow-up date", color: "#5B9F96", hint: "Hot, or going cold — with nothing scheduled" },
+  { key: "today", title: "Due today", color: "#5B3FE0", hint: "Scheduled for today" },
+  { key: "soon", title: "Coming up", color: "#5B3FE0", hint: "Due in the next 3 days" },
+  { key: "needsDate", title: "Needs a follow-up date", color: "#7C8AB8", hint: "Hot, or going cold — with nothing scheduled" },
 ];
 
 const SNOOZE = [
@@ -79,14 +79,14 @@ function TaskRow({ task, section, adminName, onSaved, password }) {
           </div>
           <span
             className="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: `${section.color}1F`, color: section.key === "today" ? "#C0185A" : section.color }}
+            style={{ backgroundColor: `${section.color}1F`, color: section.key === "today" ? "#432BC2" : section.color }}
           >
             {dueLabel(task.diff)}
           </span>
         </div>
 
         {remark && (
-          <p className="text-[12.5px] text-ink/70 bg-[#F2F8F5] rounded-xl px-3 py-2 leading-snug line-clamp-2">
+          <p className="text-[12.5px] text-ink/70 bg-[#F6F7FB] rounded-xl px-3 py-2 leading-snug line-clamp-2">
             <span className="font-semibold text-ink/50">{remark.by ? `${remark.by}: ` : "Note: "}</span>
             {remark.text}
           </p>
@@ -108,7 +108,7 @@ function TaskRow({ task, section, adminName, onSaved, password }) {
       </div>
 
       {open && (
-        <div className="border-t border-ink/10 bg-[#F2F8F5] p-4 space-y-3 star-pop">
+        <div className="border-t border-ink/10 bg-[#F6F7FB] p-4 space-y-3 star-pop">
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}

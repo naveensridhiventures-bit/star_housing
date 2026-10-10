@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import "@fontsource-variable/bricolage-grotesque/wdth.css";
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/hanken-grotesk";
 import "./index.css";
 import App from "./App.jsx";
 import { installRipple } from "./lib/ripple";

@@ -20,10 +20,10 @@ import KanbanBoard from "./KanbanBoard";
 // by matching specific status names — this works for any status list,
 // including Mediator's second independent pipeline.
 const STATUS_PALETTE = [
-  { dot: "#FF5C8A", text: "#C0185A" },
+  { dot: "#5B3FE0", text: "#432BC2" },
   { dot: "#3F7FB5", text: "#2D6291" },
   { dot: "#7A5BB0", text: "#6244A0" },
-  { dot: "#2F8F6B", text: "#0B6B66" },
+  { dot: "#2F8F6B", text: "#0B6B49" },
   { dot: "#DC2626", text: "#B91C1C" },
   { dot: "#8A93A5", text: "#5B6475" },
 ];
@@ -174,7 +174,7 @@ function StarRating({ value, onChange, disabled, size = "text-lg" }) {
           disabled={disabled || !onChange}
           onClick={() => onChange && onChange(n === value ? 0 : n)}
           className={`${size} leading-none disabled:opacity-100`}
-          style={{ color: n <= value ? "#FF5C8A" : "#07323A26" }}
+          style={{ color: n <= value ? "#5B3FE0" : "#0F142426" }}
           aria-label={`Set priority ${n}`}
         >
           ★
@@ -293,7 +293,7 @@ function LeadCard({ lead, role, adminName, accent, onOpen, statuses, statuses2 }
         )}
 
         {latestRemark && (
-          <div className="rounded-xl bg-[#F2F8F5] px-3 py-2.5">
+          <div className="rounded-xl bg-[#F6F7FB] px-3 py-2.5">
             <div className="flex items-center gap-1.5 text-[10px] text-ink/50 mb-0.5">
               <Clock size={10} strokeWidth={2.25} />
               {formatRemarkDateTime(latestRemark.at)}
@@ -670,7 +670,7 @@ function LeadDetailModal({ lead, fields, accent, sheet, roleLabel, statuses, sta
         ) : (
           <div className="max-h-52 overflow-y-auto space-y-2 mb-3">
             {remarksLog.map((r, i) => (
-              <div key={i} className="border-l-[3px] rounded-lg bg-[#F2F8F5] px-3 py-2.5" style={{ borderLeftColor: accent }}>
+              <div key={i} className="border-l-[3px] rounded-lg bg-[#F6F7FB] px-3 py-2.5" style={{ borderLeftColor: accent }}>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-ink/50 mb-1">
                   <span className="inline-flex items-center gap-1">
                     <Clock size={11} strokeWidth={2.25} />
@@ -870,7 +870,7 @@ function LeadDetailModal({ lead, fields, accent, sheet, roleLabel, statuses, sta
             </div>
           )}
 
-          <label className="mt-4 flex items-center gap-3 rounded-xl border border-ink/10 bg-[#F2F8F5] px-4 py-3 cursor-pointer select-none">
+          <label className="mt-4 flex items-center gap-3 rounded-xl border border-ink/10 bg-[#F6F7FB] px-4 py-3 cursor-pointer select-none">
             <input type="checkbox" checked={soldOut} onChange={(e) => setSoldOut(e.target.checked)} className="w-5 h-5 accent-[#B91C1C]" />
             <span className="text-sm font-semibold text-ink/80 flex-1">Mark as sold out</span>
             {soldOut && <span className="text-[10px] font-bold uppercase tracking-wide bg-coral/15 text-coral px-2 py-0.5 rounded-full">Sold out</span>}

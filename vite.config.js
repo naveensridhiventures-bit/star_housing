@@ -13,8 +13,8 @@ export default defineConfig({
         short_name: "Star Housing",
         description:
           "Connect mediators, sellers and buyers for property deals shared on Instagram.",
-        theme_color: "#07323A",
-        background_color: "#F0F7F3",
+        theme_color: "#0F1424",
+        background_color: "#F5F6FA",
         display: "standalone",
         start_url: "/",
         icons: [

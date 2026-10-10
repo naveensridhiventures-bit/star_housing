@@ -1,6 +1,6 @@
 /** Shared look for admin form fields (same family as the public wizard). */
 export const adminInputCls =
-  "w-full rounded-xl border border-ink/10 bg-[#F2F8F5] px-3.5 py-3 text-[14px] text-ink placeholder:text-ink/35 outline-none transition " +
+  "w-full rounded-xl border border-ink/10 bg-[#F6F7FB] px-3.5 py-3 text-[14px] text-ink placeholder:text-ink/35 outline-none transition " +
   "focus:bg-white focus:border-[color:var(--accent)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_18%,transparent)]";
 
 export const pillBtn =

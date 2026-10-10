@@ -30,7 +30,7 @@ function pitchFor(buyer, seller, adminName) {
   );
 }
 
-const scoreColor = (s) => (s >= 80 ? "#0B6B66" : s >= 60 ? "#FF5C8A" : "#6B7A99");
+const scoreColor = (s) => (s >= 80 ? "#0B6B49" : s >= 60 ? "#5B3FE0" : "#6B7A99");
 
 function Reason({ ok, text }) {
   return (
@@ -137,7 +137,7 @@ export default function MatchesBoard({ data, loading, error, adminName }) {
                       </div>
                       <span
                         className="shrink-0 text-[11px] font-bold px-2 py-1 rounded-full"
-                        style={best ? { backgroundColor: on ? "rgba(255,255,255,0.18)" : `${scoreColor(best)}1F`, color: on ? "#fff" : scoreColor(best) } : { color: on ? "#FFFFFF90" : "#07323A60" }}
+                        style={best ? { backgroundColor: on ? "rgba(255,255,255,0.18)" : `${scoreColor(best)}1F`, color: on ? "#fff" : scoreColor(best) } : { color: on ? "#FFFFFF90" : "#0F142460" }}
                       >
                         {best ? `${best}% · ${count}` : "No match"}
                       </span>

@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 const labelCls =
   "block text-[13px] font-semibold text-ink/65 mb-2 ml-0.5 transition-colors group-focus-within:text-[color:var(--accent)]";
 const inputCls =
-  "w-full rounded-2xl border border-ink/10 bg-[#F2F8F5] px-4 py-3.5 text-[16px] text-ink placeholder:text-ink/35 outline-none transition " +
+  "w-full rounded-2xl border border-ink/10 bg-[#F6F7FB] px-4 py-3.5 text-[16px] text-ink placeholder:text-ink/35 outline-none transition " +
   "focus:bg-white focus:border-[color:var(--accent)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent)_16%,transparent)]";
 
 /**

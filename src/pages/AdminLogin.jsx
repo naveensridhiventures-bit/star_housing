@@ -29,12 +29,12 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-canvas sm:py-8">
       <div
-        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E3F1EC] sm:shadow-[0_28px_60px_-24px_rgba(7,50,58,0.35)]"
+        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-2xl sm:border sm:border-line sm:shadow-soft"
         style={{ "--accent": COLORS.steel }}
       >
-        <BrandHeader color={COLORS.steel} className="sm:rounded-t-[2rem]" />
+        <BrandHeader color={COLORS.steel} className="sm:rounded-t-2xl" />
         <form onSubmit={handleSubmit} className="px-5 pt-8 pb-10">
-          <p className="text-[12px] font-bold uppercase tracking-[0.14em]" style={{ color: COLORS.steel }}>
+          <p className="text-[12px] font-bold uppercase " style={{ color: COLORS.steel }}>
             Admin
           </p>
           <h1 className="mt-2 font-display font-bold text-[1.6rem] leading-tight text-ink">Sign in</h1>
@@ -56,7 +56,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading || !password}
-            className="mt-6 w-full h-14 rounded-full bg-ink text-white text-[12px] font-bold uppercase tracking-[0.14em] transition active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
+            className="mt-6 w-full h-14 rounded-full bg-ink text-white text-[12px] font-bold uppercase  transition active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
           >
             {loading ? "Checking…" : "Sign in"}
           </button>

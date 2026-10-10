@@ -149,7 +149,7 @@ const FILL_KEYS = {
 
 export const TIERS = {
   Hot: "#DC2626",
-  Warm: "#FF5C8A",
+  Warm: "#5B3FE0",
   Cold: "#6B7A99",
   Closed: "#8A93A5",
 };
