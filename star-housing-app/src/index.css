@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-snow text-navy font-body antialiased;
+    background-image:
+      radial-gradient(900px 500px at 90% -10%, rgba(46,139,255,0.14), transparent 60%),
+      radial-gradient(700px 480px at -10% 30%, rgba(245,178,27,0.10), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection { background: #F5B21B; color: #061734; }
+  :focus-visible { outline: 2px solid #2E8BFF; outline-offset: 2px; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full text-white font-semibold px-6 py-3 transition active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none shadow-glow;
+    background: linear-gradient(135deg, #17408F 0%, #0B2559 100%);
+  }
+  .btn-primary:hover { filter: brightness(1.15); }
+  .btn-gold {
+    @apply relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full text-navy-dark font-bold px-6 py-3 transition active:scale-[0.97] shadow-gold;
+    background: linear-gradient(135deg, #FFD36B 0%, #F5B21B 55%, #E39A05 100%);
+  }
+  .btn-primary::after, .btn-gold::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  }
+  .btn-primary:hover::after, .btn-gold:hover::after { animation: sweep 0.9s ease; }
+  .btn-whatsapp {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full bg-whatsapp text-white font-semibold px-6 py-3 transition hover:brightness-95 active:scale-[0.97] shadow-lg shadow-whatsapp/30;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-navy/15 text-navy font-semibold px-6 py-3 transition hover:border-sky hover:text-sky hover:bg-sky/5;
+  }
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/40 text-white font-semibold px-6 py-3 transition hover:bg-white/10 hover:border-white;
+  }
+  .field-label { @apply text-[11px] uppercase tracking-[0.16em] font-bold text-navy/60 mb-1.5 block; }
+  .field-input {
+    @apply w-full rounded-xl border-2 border-navy/10 bg-white px-4 py-3 text-navy placeholder:text-navy/35 transition outline-none;
+  }
+  .field-input:focus { border-color: #2E8BFF; box-shadow: 0 0 0 4px rgba(46,139,255,0.15); }
+  .card {
+    @apply relative bg-white border border-navy/10 rounded-2xl shadow-soft;
+  }
+  .text-gradient-gold {
+    background: linear-gradient(100deg, #F5B21B 0%, #FFD36B 40%, #F5B21B 70%, #E39A05 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+  .text-gradient-navy {
+    background: linear-gradient(100deg, #0B2559, #2E8BFF);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .spotlight::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(46,139,255,0.16), transparent 60%);
+  }
+  .spotlight:hover::before { opacity: 1; }
+  .hero-kenburns { animation: kenburns 24s ease-in-out infinite alternate; transform-origin: 70% 40%; }
+  .float-slow { animation: floaty 7s ease-in-out infinite; }
+  .float-slower { animation: floaty 10s ease-in-out infinite reverse; }
+  .twinkle { animation: twinkle 3.2s ease-in-out infinite; }
+  .spin-slow { animation: spin 24s linear infinite; }
+  .fade-up { animation: fadeUp .8s cubic-bezier(.2,.7,.2,1) both; }
+  .pop-in { animation: popIn .7s cubic-bezier(.2,1.2,.3,1) both; }
+  .page-in { animation: pageIn .55s cubic-bezier(.2,.7,.2,1) both; }
+  .marquee-track { animation: marquee 32s linear infinite; }
+  .pulse-ring::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid #F5B21B;
+    animation: pulseRing 2.4s ease-out infinite;
+  }
+  .draw-line { transform-origin: left; transform: scaleX(0); transition: transform 1.4s cubic-bezier(.2,.7,.2,1) .3s; }
+  .in .draw-line, .draw-line.in { transform: scaleX(1); }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+}
+
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.1) translate(-1.5%, 1%); } }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes twinkle { 0%,100% { opacity: .25; transform: scale(.8) rotate(0); } 50% { opacity: 1; transform: scale(1.15) rotate(18deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes shimmer { to { background-position: 200% center; } }
+@keyframes sweep { to { transform: translateX(120%) skewX(-20deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes popIn { from { opacity: 0; transform: scale(.6) rotate(-12deg); } to { opacity: 1; transform: none; } }
+@keyframes pageIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes pulseRing { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(1.45); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
