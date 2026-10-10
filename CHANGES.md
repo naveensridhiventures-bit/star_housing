@@ -1,3 +1,7 @@
+# v5b — New Apps Script URL (2026-10-10)
+
+Only `src/lib/config.js` changed: APPS_SCRIPT_URL points to the new deployment (…EuSX84Q).
+
 # v5 — "Estate": a new layout system (2026-10-10)
 
 Every feature is unchanged. This is a rebuild of how each page is laid out, not a recolour. No Code.gs change.
