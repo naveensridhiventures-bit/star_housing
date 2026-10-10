@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import RoleBadge from "../components/RoleBadge";
 import PageHero from "../components/PageHero";
 import { listPublicProperties } from "../lib/api";
@@ -10,6 +10,8 @@ const ACCENT = "#EA580C";
 export default function Buyer() {
   const [properties, setProperties] = useState(null);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
 
   useEffect(() => {
     listPublicProperties()
@@ -17,10 +19,49 @@ export default function Buyer() {
       .catch((err) => setError(err.message || "Could not load listings"));
   }, []);
 
+  const types = useMemo(
+    () => ["All", ...Array.from(new Set((properties || []).map((p) => p.type).filter(Boolean)))],
+    [properties]
+  );
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return (properties || []).filter(
+      (p) =>
+        (typeFilter === "All" || p.type === typeFilter) &&
+        (!q || `${p.title} ${p.location} ${p.description || ""}`.toLowerCase().includes(q))
+    );
+  }, [properties, query, typeFilter]);
+
   return (
     <>
       <PageHero label="Buyer" eyebrow="Browse listings" title="Available properties" subtitle="Verified properties we are currently mediating." accent={ACCENT} />
       <div className="max-w-5xl mx-auto px-5 pb-20 -mt-10 relative z-10">
+
+      {properties?.length > 0 && (
+        <div className="card p-4 mb-6 flex flex-col sm:flex-row gap-3 sm:items-center">
+          <input
+            className="field-input sm:max-w-xs !py-2.5"
+            placeholder="Search title or location…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <div className="flex gap-2 flex-wrap">
+            {types.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTypeFilter(t)}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition ${
+                  typeFilter === t ? "bg-navy text-white shadow-glow" : "bg-snow text-navy/60 hover:text-navy hover:bg-sky-soft"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <span className="sm:ml-auto text-xs font-semibold text-navy/50">{visible.length} found</span>
+        </div>
+      )}
 
       {error && (
         <div className="card p-6 text-center text-danger text-sm">{error}</div>
@@ -42,11 +83,17 @@ export default function Buyer() {
         </div>
       )}
 
-      {properties?.length > 0 && (
+      {properties?.length > 0 && visible.length === 0 && (
+        <div className="card p-10 text-center text-navy/60">No properties match your search.</div>
+      )}
+
+      {visible.length > 0 && (
         <div className="grid sm:grid-cols-2 gap-5">
-          {properties.map((p) => (
-            <article key={p.id} className="card group overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-glow transition-all duration-500 fade-up">
-              <div className="aspect-[4/3] bg-navy/5 overflow-hidden">
+          {visible.map((p, i) => (
+            <article key={p.id} style={{ animationDelay: `${Math.min(i, 6) * 80}ms` }} className="card group overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-glow transition-all duration-500 fade-up">
+              <div className="relative aspect-[4/3] bg-navy/5 overflow-hidden">
+                <span className="absolute left-3 bottom-3 z-10 px-3 py-1.5 rounded-full bg-gradient-to-r from-gold-light to-gold text-navy-dark text-sm font-extrabold shadow-gold">{p.price}</span>
+                <span className="absolute right-3 top-3 z-10 px-2.5 py-1 rounded-full bg-navy/80 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider">★ Verified</span>
                 {p.imageUrl ? (
                   <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 ) : (
@@ -64,8 +111,7 @@ export default function Buyer() {
                     {p.type || "Property"}
                   </span>
                 </div>
-                <p className="text-sm text-navy/50">{p.location}</p>
-                <p className="font-semibold text-navy">{p.price}</p>
+                <p className="text-sm text-navy/60 font-medium">📍 {p.location}</p>
                 {p.description && (
                   <p className="text-sm text-navy/60 leading-relaxed line-clamp-3">{p.description}</p>
                 )}

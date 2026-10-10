@@ -3,6 +3,13 @@ import { adminListMediators, adminListSellers, adminUpdateRemark } from "../../l
 import { whatsappLink, callLink } from "../../lib/whatsapp";
 
 const STATUSES = ["New", "Contacted", "In progress", "Closed", "Dropped"];
+const STATUS_STYLE = {
+  New: "bg-sky-soft text-sky",
+  Contacted: "bg-gold/20 text-gold-dark",
+  "In progress": "bg-mediator/10 text-mediator",
+  Closed: "bg-seller/10 text-seller",
+  Dropped: "bg-danger/10 text-danger",
+};
 
 function LeadRow({ lead, sheet, password, onSaved }) {
   const [remarks, setRemarks] = useState(lead.remarks || "");
@@ -20,13 +27,13 @@ function LeadRow({ lead, sheet, password, onSaved }) {
   }
 
   return (
-    <div className="card p-4 sm:p-5 grid sm:grid-cols-[1fr,220px] gap-4">
+    <div className="card p-4 sm:p-5 hover:shadow-glow transition-shadow grid sm:grid-cols-[1fr,220px] gap-4">
       <div className="flex gap-3">
         {lead.imageUrl && (
           <img src={lead.imageUrl} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0 border border-navy/10" />
         )}
         <div className="min-w-0">
-          <p className="font-semibold text-navy text-sm">{lead.propertyTitle || lead.propertyType || "—"}</p>
+          <p className="font-semibold text-navy text-sm flex items-center gap-2 flex-wrap">{lead.propertyTitle || lead.propertyType || "—"}<span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${STATUS_STYLE[status] || STATUS_STYLE.New}`}>{status}</span></p>
           <p className="text-xs text-navy/50 font-mono mt-0.5">#{lead.id} · {lead.timestamp}</p>
           <p className="text-sm text-navy/70 mt-1">{lead.name} · {lead.phone}</p>
           {lead.instaRef && <p className="text-xs text-navy/50 mt-1 truncate">Insta: {lead.instaRef}</p>}

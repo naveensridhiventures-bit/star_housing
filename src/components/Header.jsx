@@ -12,9 +12,14 @@ const links = [
 export default function Header() {
   const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -64,6 +69,7 @@ export default function Header() {
           </Link>
         )}
       </div>
+      <div className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-gold-dark via-gold-light to-sky transition-[width] duration-150" style={{ width: `${progress}%` }} />
     </header>
   );
 }
