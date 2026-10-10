@@ -1,127 +1,124 @@
-import { useState } from "react";
-import RoleBadge from "../components/RoleBadge";
-import PageHero from "../components/PageHero";
-import ImageUploader from "../components/ImageUploader";
+import Wizard from "../components/wizard/Wizard";
+import ChoiceGroup from "../components/wizard/ChoiceGroup";
+import TextField, { PhoneField } from "../components/wizard/TextField";
+import { isValidPhone } from "../lib/validate";
+import { COLORS } from "../lib/theme";
 import { addMediatorLead } from "../lib/api";
-import { whatsappLink } from "../lib/whatsapp";
-import { ADMIN_WHATSAPP_NUMBER } from "../lib/config";
 
-const ACCENT = "#2563EB";
+const PROFESSIONS = ["Mediator", "Real Estate Agent", "Builder", "Developer"];
+const AREAS = ["North Chennai", "Central Chennai", "South Chennai", "All Over Chennai"];
+const CATEGORIES = ["Residential", "Commercial", "Land", "Rental", "All Categories"];
+const EXPERIENCE = ["Below 1 Year", "1–3 Years", "3–5 Years", "Above 5 Years"];
+const DEAL_TYPES = ["Sale", "Rental", "Lease", "All"];
+const YES_NO = ["Yes", "No"];
+
+const initialForm = {
+  name: "",
+  phone: "",
+  profession: "",
+  workingArea: "",
+  propertyCategory: "",
+  experience: "",
+  dealType: "",
+  genuineLeads: "",
+};
+
+const landing = {
+  title: "Join our mediator network",
+  subtitle: "Register once and get genuine buyer and seller leads.",
+  note: "Takes about a minute. Our team reviews every registration and gets in touch.",
+  cta: "Get started",
+  items: [
+    { label: "You", text: "Your name, number and profession", color: COLORS.steel },
+    { label: "Work", text: "Your area and property category", color: COLORS.teal },
+    { label: "Experience", text: "Experience, deal types and our genuine-leads promise", color: COLORS.coral },
+  ],
+};
+
+const steps = [
+  {
+    label: "Personal details",
+    title: "Who should we contact?",
+    hint: "We'll reach out on WhatsApp.",
+    valid: (f) => f.name.trim() && isValidPhone(f.phone),
+    render: (f, set) => (
+      <>
+        <TextField label="Full name" required valid={f.name.trim().length > 1} autoComplete="name" placeholder="Your name" value={f.name} onChange={(e) => set("name", e.target.value)} />
+        <PhoneField value={f.phone} onChange={(v) => set("phone", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Profession",
+    title: "What do you do?",
+    auto: true,
+    valid: (f) => f.profession,
+    render: (f, set) => <ChoiceGroup options={PROFESSIONS} value={f.profession} onChange={(v) => set("profession", v)} required />,
+  },
+  {
+    label: "Area & category",
+    title: "Where and what do you work on?",
+    valid: (f) => f.workingArea && f.propertyCategory,
+    render: (f, set) => (
+      <>
+        <ChoiceGroup label="Working area" required options={AREAS} value={f.workingArea} onChange={(v) => set("workingArea", v)} />
+        <ChoiceGroup label="Property category" required options={CATEGORIES} value={f.propertyCategory} onChange={(v) => set("propertyCategory", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Experience & deals",
+    title: "Your experience",
+    valid: (f) => f.experience && f.dealType,
+    render: (f, set) => (
+      <>
+        <ChoiceGroup label="Experience" required options={EXPERIENCE} value={f.experience} onChange={(v) => set("experience", v)} />
+        <ChoiceGroup label="Deal type" required options={DEAL_TYPES} value={f.dealType} onChange={(v) => set("dealType", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Our promise",
+    title: "Do you share only genuine property leads?",
+    hint: "Our network only works when every lead is real.",
+    auto: true,
+    valid: (f) => f.genuineLeads,
+    render: (f, set) => <ChoiceGroup options={YES_NO} value={f.genuineLeads} onChange={(v) => set("genuineLeads", v)} required />,
+  },
+];
 
 export default function Mediator() {
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    instaRef: "",
-    propertyTitle: "",
-    location: "",
-    price: "",
-    message: "",
-  });
-  const [imageUrl, setImageUrl] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | saving | done | error
-  const [errorMsg, setErrorMsg] = useState("");
-
-  function update(key, value) {
-    setForm((f) => ({ ...f, [key]: value }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (!form.name || !form.phone || !form.propertyTitle) return;
-    setStatus("saving");
-    setErrorMsg("");
-    try {
-      await addMediatorLead({ ...form, imageUrl });
-      setStatus("done");
-    } catch (err) {
-      setErrorMsg(err.message || "Could not save — check your connection and try again.");
-      setStatus("error");
-    }
-  }
-
-  const waMessage =
-    `New mediator lead — ${form.propertyTitle || "(property)"}\n` +
-    `From: ${form.name} (${form.phone})\n` +
-    `Insta reference: ${form.instaRef || "—"}\n` +
-    `Location: ${form.location || "—"}\n` +
-    `Price: ${form.price || "—"}\n` +
-    `Note: ${form.message || "—"}`;
-
-  if (status === "done") {
-    return (
-      <div className="max-w-md mx-auto px-5 pt-16 text-center">
-        <span className="pop-in inline-block"><RoleBadge label="Received" color={ACCENT} size={80} rotate={-10} /></span>
-        <h1 className="font-display font-extrabold text-2xl text-navy mt-5 mb-2">
-          Saved to our records
-        </h1>
-        <p className="text-navy/60 mb-7 leading-relaxed">
-          Your listing for <strong>{form.propertyTitle}</strong> is logged. Send it to us on
-          WhatsApp now so we can start the conversation right away.
-        </p>
-        <a
-          href={whatsappLink(ADMIN_WHATSAPP_NUMBER, waMessage)}
-          target="_blank"
-          rel="noreferrer"
-          className="btn-whatsapp w-full"
-        >
-          Message admin on WhatsApp
-        </a>
-        <a href="/mediator" className="block mt-4 text-sm text-navy/50 hover:text-navy">
-          Submit another property
-        </a>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <PageHero label="Mediator" eyebrow="Bring the deal" title="Mediator details" subtitle="Share the listing you spotted — we connect with you on WhatsApp." accent={ACCENT} />
-      <div className="max-w-lg mx-auto px-5 pb-20 -mt-10 relative z-10 fade-up">
-
-      <form onSubmit={handleSubmit} className="card p-6 space-y-5">
-        <div>
-          <label className="field-label">Your name</label>
-          <input className="field-input" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Full name" required />
-        </div>
-        <div>
-          <label className="field-label">Your phone / WhatsApp number</label>
-          <input className="field-input" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="10-digit number" required />
-        </div>
-        <div>
-          <label className="field-label">Which Instagram video / post?</label>
-          <input className="field-input" value={form.instaRef} onChange={(e) => update("instaRef", e.target.value)} placeholder="Paste the reel link or describe it" />
-        </div>
-        <div>
-          <label className="field-label">Property title</label>
-          <input className="field-input" value={form.propertyTitle} onChange={(e) => update("propertyTitle", e.target.value)} placeholder="e.g. 2BHK near Anna Nagar" required />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="field-label">Location</label>
-            <input className="field-input" value={form.location} onChange={(e) => update("location", e.target.value)} placeholder="Area, city" />
-          </div>
-          <div>
-            <label className="field-label">Price</label>
-            <input className="field-input" value={form.price} onChange={(e) => update("price", e.target.value)} placeholder="₹ amount" />
-          </div>
-        </div>
-        <div>
-          <label className="field-label">Message for admin</label>
-          <textarea className="field-input min-h-[90px]" value={form.message} onChange={(e) => update("message", e.target.value)} placeholder="Anything admin should know" />
-        </div>
-        <div>
-          <label className="field-label">Property photo</label>
-          <ImageUploader accentColor={ACCENT} onUploaded={setImageUrl} />
-        </div>
-
-        {errorMsg && <p className="text-sm text-danger">{errorMsg}</p>}
-
-        <button type="submit" disabled={status === "saving"} className="btn-primary w-full">
-          {status === "saving" ? "Saving…" : "Save & continue to WhatsApp"}
-        </button>
-      </form>
-    </div>
-    </>
+    <Wizard
+      role="Mediator"
+      initialForm={initialForm}
+      landing={landing}
+      steps={steps}
+      chips={(f) => [f.name.trim() && f.name.trim().split(" ")[0], f.profession, f.workingArea && f.workingArea.replace(" Chennai", ""), f.propertyCategory, f.experience]}
+      reviewTitle="Review your details"
+      reviewNote="Check everything looks right. Tap any row to change it."
+      reviewRows={(f) => [
+        { label: "Name", value: f.name, step: 1 },
+        { label: "Mobile", value: f.phone, step: 1 },
+        { label: "Profession", value: f.profession, step: 2 },
+        { label: "Area", value: f.workingArea, step: 3 },
+        { label: "Category", value: f.propertyCategory, step: 3 },
+        { label: "Experience", value: f.experience, step: 4 },
+        { label: "Deal type", value: f.dealType, step: 4 },
+        { label: "Genuine leads", value: f.genuineLeads, step: 5 },
+      ]}
+      submit={(f) => addMediatorLead({ ...f, name: f.name.trim() })}
+      submitLabel="Submit registration"
+      success={{
+        title: "Welcome to the network",
+        text: (f) => `Thanks, ${f.name.trim()}. Our team will review your registration and get in touch with you directly.`,
+        next: [
+          { title: "Our team reviews your registration", text: "We check your area, category and experience." },
+          { title: "We get in touch with you directly", text: "Expect a WhatsApp message from our team." },
+          { title: "Genuine leads start coming your way", text: "Buyer and seller leads that match your work." },
+        ],
+        againLabel: "Register another",
+      }}
+    />
   );
 }

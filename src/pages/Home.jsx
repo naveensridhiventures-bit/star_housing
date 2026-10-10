@@ -1,191 +1,377 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import RoleBadge from "../components/RoleBadge";
+import { Handshake, User, Search, Image as ImageIcon, ChevronRight, MessageCircle, ArrowRight, Lock, UserCheck, ClipboardCheck } from "lucide-react";
 import Reveal from "../components/Reveal";
-import { StarShape } from "../components/Logo";
-import { COMPANY_NAME, ADMIN_WHATSAPP_NUMBER } from "../lib/config";
+import RotatingWords from "../components/home/RotatingWords";
+import Particles from "../components/home/Particles";
+import Ticker from "../components/home/Ticker";
+import SearchDock from "../components/home/SearchDock";
+import FreshRail from "../components/home/FreshRail";
+import LiveStats from "../components/home/LiveStats";
+import useTilt from "../components/home/useTilt";
+import useProperties from "../lib/useProperties";
+import useInView from "../lib/useInView";
 import { whatsappLink } from "../lib/whatsapp";
+import { ADMIN_WHATSAPP_NUMBER, APP_NAME, COMPANY_NAME } from "../lib/config";
+import Logo, { StarShape } from "../components/Logo";
+import { HERO_IMAGE } from "../lib/brand";
 
-const roles = [
-  {
-    to: "/mediator",
-    label: "Mediator",
-    hex: "#2563EB",
-    tag: "Bring the deal",
-    desc: "Saw a property on our Insta page? Upload the listing with your note and photo — we'll connect on WhatsApp.",
-  },
+
+const ROLE_WORDS = ["buy a home.", "sell a flat.", "find a plot.", "list a shop.", "close a deal."];
+
+const ROLES = [
   {
     to: "/seller",
-    label: "Seller",
-    hex: "#0D9488",
-    tag: "List your property",
-    desc: "Share price, location and details of the house, plot or shop you're selling. We follow up directly with you.",
+    title: "I'm a seller",
+    desc: "List your property and connect with genuine buyers.",
+    Icon: User,
+    tile: "#0D9488",
+    bg: "#DDF3EF",
+    titleColor: "#0B5F58",
+    chevBg: "#B5E3DB",
   },
   {
     to: "/buyer",
-    label: "Buyer",
-    hex: "#EA580C",
-    tag: "Browse listings",
-    desc: "See verified properties we're currently mediating, with photos and full details.",
+    title: "I'm a buyer",
+    desc: "Tell us what you need and we'll find matching properties.",
+    Icon: Search,
+    tile: "#EA580C",
+    bg: "#FFEBD9",
+    titleColor: "#9A3412",
+    chevBg: "#FDCFA6",
+  },
+  {
+    to: "/mediator",
+    title: "I'm a mediator",
+    desc: "Join the network and close better deals.",
+    Icon: Handshake,
+    tile: "#2563EB",
+    bg: "#E1ECFF",
+    titleColor: "#17408F",
+    chevBg: "#BCD3FA",
   },
 ];
 
-const steps = [
-  ["01", "Spot it on Instagram", "You post a property video — a viewer wants in, as mediator, seller or buyer."],
-  ["02", "They fill their details", "Right here in the app — property, price, location, and a photo if they have one."],
-  ["03", "We take it from WhatsApp", "It lands straight to us, and we follow up directly to close the deal."],
+const STEPS = [
+  { title: "Tell us what you need", text: "Fill in a short form. It takes about a minute." },
+  { title: "We review and match", text: "Our team looks at every request and contacts you with matching properties." },
+  { title: "Talk to us on WhatsApp", text: "Ask questions and move ahead, with a real person on the other end." },
 ];
 
-const marquee = ["Buy", "Sell", "Rent", "Invest", "Your Dream", "Our Priority", "Prime Locations", "Great Investments"];
+function RoleCard({ role }) {
+  const { to, title, desc, Icon, tile, bg, titleColor, chevBg } = role;
+  const tilt = useTilt(5);
+  return (
+    <Link
+      to={to}
+      {...tilt}
+      className="role-card group relative h-full overflow-hidden flex items-center gap-3 sm:gap-4 rounded-3xl p-3.5 sm:p-5 md:flex-col md:items-start md:gap-5 md:p-6 md:pb-[4.75rem] shadow-[0_10px_28px_-14px_rgba(11,37,89,0.35)] active:scale-[0.985] transition-transform"
+      style={{ background: bg, "--tile": tile }}
+    >
+      <span className="sheen" aria-hidden="true" />
+      <span
+        className="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+        style={{ background: tile }}
+      >
+        <Icon size={26} strokeWidth={2.2} />
+      </span>
+      <span className="relative flex-1 min-w-0">
+        <span className="block font-display font-bold text-[1.3rem] sm:text-[1.4rem] leading-tight" style={{ color: titleColor }}>
+          {title}
+        </span>
+        <span className="block text-[13.5px] sm:text-[14px] leading-snug text-ink/65 mt-1">{desc}</span>
+      </span>
+      <span
+        className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:!bg-[color:var(--tile)] group-hover:!text-white md:absolute md:right-5 md:bottom-5"
+        style={{ background: chevBg, color: tile }}
+        aria-hidden="true"
+      >
+        <ChevronRight size={22} strokeWidth={2.6} />
+      </span>
+    </Link>
+  );
+}
 
-function spot(e) {
-  const r = e.currentTarget.getBoundingClientRect();
-  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+const WHY = [
+  { Icon: ClipboardCheck, title: "Read by our team", text: "Every request and listing is reviewed by a person before anything happens.", tint: "#0D9488" },
+  { Icon: Lock, title: "Your details stay private", text: "Listings never show a seller's phone number or exact address.", tint: "#2563EB" },
+  { Icon: UserCheck, title: "A real person on WhatsApp", text: "Ask questions, share requirements and move ahead without a call centre.", tint: "#EA580C" },
+];
+
+function WhyUs() {
+  return (
+    <section className="mt-14" aria-labelledby="why-title">
+      <h2 id="why-title" className="font-display font-bold text-[1.6rem] sm:text-3xl leading-tight text-center text-ink">Why people use us</h2>
+      <div className="mt-7 grid gap-3.5 md:grid-cols-3">
+        {WHY.map(({ Icon, title, text, tint }, i) => (
+          <Reveal key={title} delay={i * 110} distance={24} className="h-full">
+            <div className="why-card h-full rounded-3xl bg-surface ring-1 ring-ink/[0.06] p-5 shadow-[0_14px_30px_-22px_rgba(11,37,89,0.5)] hover:shadow-[0_22px_40px_-20px_rgba(11,37,89,0.5)] transition-shadow">
+              <span className="why-ico w-12 h-12 rounded-2xl flex items-center justify-center text-white" style={{ background: tint }}>
+                <Icon size={23} strokeWidth={2} />
+              </span>
+              <h3 className="mt-4 font-display font-bold text-[1.15rem] text-ink leading-snug">{title}</h3>
+              <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink/60">{text}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FinalCta() {
+  return (
+    <Reveal distance={30} className="mt-16">
+      <section className="relative isolate overflow-hidden rounded-[2rem] bg-ink-dark text-white px-6 py-10 sm:px-12 sm:py-14 text-center shadow-[0_28px_60px_-28px_rgba(6,23,52,0.85)]">
+        <span className="cta-orb absolute -z-10 -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,211,107,0.35),transparent_68%)]" aria-hidden="true" />
+        <span className="cta-orb absolute -z-10 -bottom-28 -left-20 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(46,139,255,0.30),transparent_68%)]" style={{ animationDelay: "-4s" }} aria-hidden="true" />
+        <h2 className="font-display font-bold text-[1.8rem] sm:text-4xl leading-tight text-balance">Ready to buy, sell or join the network?</h2>
+        <p className="mt-3 text-white/65 text-[15px] sm:text-lg max-w-md mx-auto text-balance">Fill in a short form. We read every request and reply on WhatsApp.</p>
+        <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link to="/buyer" className="rip btn-shine h-13 py-3.5 px-8 rounded-full bg-gradient-to-br from-gold-light via-gold to-[#E39A05] text-ink-dark font-extrabold text-[15px] flex items-center justify-center gap-2 active:scale-95 transition-transform">
+            Tell us what you need <ArrowRight size={18} />
+          </Link>
+          <Link to="/seller" className="rip py-3.5 px-8 rounded-full border border-white/30 text-white font-semibold text-[15px] flex items-center justify-center hover:bg-white/10 active:scale-95 transition">
+            List my property
+          </Link>
+        </div>
+      </section>
+    </Reveal>
+  );
+}
+
+function HowItWorks() {
+  const ref = useRef(null);
+  const seen = useInView(ref, { threshold: 0.3 });
+  return (
+    <section ref={ref} className={`mt-14 ${seen ? "is-in" : ""}`} aria-labelledby="how-title">
+      <h2 id="how-title" className="font-display font-bold text-[1.6rem] leading-tight text-center text-ink">
+        How it works
+      </h2>
+      <p className="text-center text-sm text-ink/55 mt-1.5">Three simple steps, whichever side you're on.</p>
+
+      <ol className="relative mt-8 max-w-md mx-auto">
+        <span className="steps-line absolute left-[1.35rem] top-6 bottom-6 w-[2px] bg-gradient-to-b from-gold via-gold/60 to-gold/10" aria-hidden="true" />
+        {STEPS.map((s, i) => (
+          <li key={s.title} className="relative flex gap-4 pb-8 last:pb-0" style={{ "--i": i }}>
+            <span className="step-badge relative z-10 w-11 h-11 shrink-0 rounded-full bg-ink text-gold font-display font-bold text-lg flex items-center justify-center ring-4 ring-canvas">
+              {i + 1}
+            </span>
+            <div className="step-text pt-1">
+              <h3 className="font-display font-bold text-[1.1rem] text-ink leading-snug">{s.title}</h3>
+              <p className="text-sm text-ink/60 leading-relaxed mt-1">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
 }
 
 export default function Home() {
-  return (
-    <div>
-      {/* ── Hero: cover image with slow cinematic zoom ───────────── */}
-      <section className="relative">
-        <div className="relative w-full aspect-[5/2] overflow-hidden bg-navy-dark">
-          <picture>
-            <source media="(min-width: 900px)" srcSet="/brand/cover.jpg" />
-            <img
-              src="/brand/cover-sm.jpg"
-              alt="Star Housing Properties India Pvt Ltd — Your dream, our priority"
-              className="absolute inset-0 w-full h-full object-cover hero-kenburns"
-              fetchPriority="high"
-            />
-          </picture>
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-snow to-transparent" />
-          <StarShape className="absolute left-[46%] top-[12%] twinkle hidden sm:block" size={18} />
-          <StarShape className="absolute left-[8%] bottom-[22%] twinkle hidden sm:block" size={12} color="#FFD36B" />
-        </div>
+  const heroRef = useRef(null);
+  const { properties, error } = useProperties();
+  const hasListings = !!properties && properties.some((p) => !p.sold && p.images.length > 0);
+  const [showChat, setShowChat] = useState(false);
 
-        <div className="relative max-w-5xl mx-auto px-5 -mt-10 sm:-mt-16">
-          <div className="card spotlight p-6 sm:p-10 text-center overflow-hidden fade-up" onMouseMove={spot}>
-            <div className="absolute -top-20 -left-16 w-56 h-56 rounded-full bg-sky/20 blur-3xl float-slow" />
-            <div className="absolute -bottom-24 -right-10 w-64 h-64 rounded-full bg-gold/25 blur-3xl float-slower" />
-            <div className="relative">
-              <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-bold text-gold-dark">
-                Star Housing Properties India
-              </p>
-              <h1 className="mt-3 font-display font-extrabold text-4xl sm:text-6xl leading-[1.05] tracking-tight text-navy">
-                Your Dream.<br className="sm:hidden" /> <span className="text-gradient-gold">Our Priority.</span>
-              </h1>
-              <p className="mt-5 text-navy/65 max-w-xl mx-auto leading-relaxed">
-                One record for every house, plot or shop shared on our Instagram — from the first message to the
-                final handshake.
-              </p>
-              <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <Link to="/buyer" className="btn-gold">Browse properties →</Link>
-                <Link to="/seller" className="btn-primary">List your property</Link>
-              </div>
+  // Parallax: the photo drifts slower than the page, the text lifts and fades
+  // as you scroll away. We only write a CSS variable, so React never re-renders.
+  useEffect(() => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+    function onScroll() {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (!reduce) heroRef.current?.style.setProperty("--py", String(Math.min(y, 700)));
+        setShowChat(y > 380);
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div className="bg-ink-dark">
+      {/* ---------- Hero ---------- */}
+      <section
+        ref={heroRef}
+        className="relative isolate overflow-hidden min-h-[33rem] sm:min-h-[38rem] flex flex-col text-center"
+      >
+        <div className="hero-bg absolute inset-0 -z-10" aria-hidden="true">
+          <img
+            src={HERO_IMAGE}
+            alt=""
+            className="hero-photo w-full h-full object-cover object-[72%_40%] sm:object-center"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
+        {/* Darkening so the words always read clearly over the photo */}
+        <div
+          className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(6,23,52,0.42)_0%,rgba(6,23,52,0.70)_45%,rgba(6,23,52,0.94)_100%)]"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_38%,rgba(46,139,255,0.20),transparent_62%)]" aria-hidden="true" />
+        <Particles />
+        <StarShape className="absolute left-[10%] top-[16%] twinkle hidden sm:block" size={20} />
+        <StarShape className="absolute right-[12%] top-[30%] twinkle hidden sm:block" size={14} color="#FFD36B" />
+        <StarShape className="absolute right-[26%] bottom-[34%] twinkle hidden sm:block" size={10} />
+
+        <div className="hero-content flex-1 flex flex-col items-center justify-center px-5 pt-[max(3rem,env(safe-area-inset-top))] pb-14">
+          {/* Logo: gold ring, slow orbit, soft pulsing glow */}
+          <div className="logo-in relative w-[7.5rem] h-[7.5rem] sm:w-36 sm:h-36">
+            <span className="orbit absolute -inset-3 rounded-full border border-dashed border-gold/50" aria-hidden="true">
+              <span className="absolute -top-[3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_10px_2px_rgba(255,211,107,0.9)]" />
+            </span>
+            <div className="ring-glow absolute inset-0 rounded-full border-2 border-gold bg-navy-dark/85 flex items-center justify-center">
+              <Logo size={86} tone="light" className="sm:w-[100px]" />
             </div>
           </div>
+
+{/* Title: each word rises out of a mask; "Housing" carries a gold shimmer */}
+          <h1 className="mt-7 font-display font-extrabold text-white text-[2.3rem] leading-[1.08] sm:text-6xl tracking-tight uppercase text-balance" aria-label={APP_NAME}>
+            <span aria-hidden="true">
+              <span className="mask-word"><span className="mask-inner" style={{ "--d": "250ms" }}>Star</span></span>{" "}
+              <span className="mask-word"><span className="mask-inner gold-shimmer" style={{ "--d": "420ms" }}>Housing</span></span>
+            </span>
+          </h1>
+          <p className="fade-up mt-2 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-gold-light" style={{ "--d": "650ms" }}>
+            Properties India Pvt Ltd
+          </p>
+
+{/* Rolling words */}
+          <p className="fade-up mt-5 text-paper/80 text-[15px] sm:text-lg" style={{ "--d": "850ms" }}>
+            The trusted way to
+          </p>
+          <p className="fade-up font-display font-semibold text-gold text-[1.7rem] sm:text-4xl leading-tight mt-1" style={{ "--d": "980ms" }}>
+            <RotatingWords words={ROLE_WORDS} />
+          </p>
+
+          {/* Tagline, one phrase at a time */}
+          <p className="mt-5 text-paper/75 text-[13px] sm:text-base leading-relaxed text-balance">
+            <span className="fade-up inline-block" style={{ "--d": "1250ms" }}>Your Dream.</span>{" "}
+            <span className="fade-up inline-block" style={{ "--d": "1450ms" }}>Our Priority.</span>{" "}
+            <span className="fade-up inline-block" style={{ "--d": "1650ms" }}>Every Deal, Done Right.</span>
+          </p>
+
+          {/* Divider draws outward from the diamond */}
+          <div className="mt-6 flex items-center gap-3" aria-hidden="true">
+            <span className="line-grow origin-right h-px w-16 sm:w-24 bg-gradient-to-r from-transparent to-gold/80" />
+            <span className="diamond-in w-2.5 h-2.5 rotate-45 border border-gold" />
+            <span className="line-grow origin-left h-px w-16 sm:w-24 bg-gradient-to-l from-transparent to-gold/80" />
+          </div>
+
+          <div className="cta-in mt-7 flex flex-wrap items-center justify-center gap-3" style={{ "--d": "1900ms" }}>
+            <Link to="/gallery" className="rip btn-shine h-12 px-7 rounded-full bg-gradient-to-br from-gold-light via-gold to-[#E39A05] text-ink-dark font-extrabold text-[14.5px] flex items-center gap-2 active:scale-95 transition-transform shadow-gold">
+              Browse properties <ArrowRight size={17} />
+            </Link>
+            <a
+              href={whatsappLink(ADMIN_WHATSAPP_NUMBER, "Hi Star Housing, I'd like to know more about your properties.")}
+              target="_blank"
+              rel="noreferrer"
+              className="rip h-12 px-6 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm text-white font-semibold text-[14.5px] flex items-center gap-2 hover:bg-white/20 active:scale-95 transition"
+            >
+              <MessageCircle size={18} /> Chat with us
+            </a>
+          </div>
+        </div>
+
+        <div className="mb-24 sm:mb-28">
+          <Ticker />
         </div>
       </section>
 
-      {/* ── Marquee ──────────────────────────────────────────────── */}
-      <div className="mt-12 bg-navy text-white overflow-hidden border-y-2 border-gold/60" aria-hidden="true">
-        <div className="marquee-track flex w-max py-3.5">
-          {[...marquee, ...marquee, ...marquee, ...marquee].map((m, i) => (
-            <span key={i} className="flex items-center gap-6 pr-6 font-display font-bold uppercase tracking-[0.2em] text-sm whitespace-nowrap">
-              {m}
-              <StarShape size={14} />
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Roles ────────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-5">
-        <Reveal className="pt-16 pb-8 text-center">
-          <p className="text-[11px] uppercase tracking-[0.3em] font-bold text-sky">Get started</p>
-          <h2 className="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-navy">How would you like to join?</h2>
-        </Reveal>
-
-        <section className="grid sm:grid-cols-3 gap-5">
-          {roles.map((r, i) => (
-            <Reveal key={r.to} delay={i * 120}>
-              <Link
-                to={r.to}
-                onMouseMove={spot}
-                className="card spotlight group p-6 flex flex-col gap-5 h-full overflow-hidden hover:-translate-y-2 hover:shadow-glow transition-all duration-500"
-              >
-                <span className="absolute inset-x-0 top-0 h-1.5 origin-left scale-x-50 group-hover:scale-x-100 transition-transform duration-500" style={{ background: `linear-gradient(90deg, ${r.hex}, #F5B21B)` }} />
-                <div className="flex items-start justify-between">
-                  <RoleBadge label={r.label} color={r.hex} size={64} />
-                  <span
-                    className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-                    style={{ color: r.hex, backgroundColor: `${r.hex}14` }}
-                  >
-                    {r.tag}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="font-display font-extrabold text-2xl text-navy mb-1.5">{r.label}</h3>
-                  <p className="text-sm text-navy/60 leading-relaxed">{r.desc}</p>
-                </div>
-                <span className="mt-auto text-sm font-bold flex items-center gap-1.5" style={{ color: r.hex }}>
-                  Continue as {r.label}
-                  <span className="group-hover:translate-x-1.5 transition-transform">→</span>
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </section>
-
-        {/* ── How it works ───────────────────────────────────────── */}
-        <Reveal className="mt-20">
-          <div className="text-center mb-10">
-            <p className="text-[11px] uppercase tracking-[0.3em] font-bold text-gold-dark">How it works</p>
-            <h2 className="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-navy">Three simple steps</h2>
+      {/* ---------- Cream sheet rising over the hero ---------- */}
+      <section className="relative z-10 -mt-8 bg-canvas rounded-t-[2rem] pt-9 pb-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-5">
+          <div className="relative z-20 -mt-[5.25rem] sm:-mt-[6rem] mb-2">
+            <SearchDock properties={properties} />
           </div>
-          <ol className="relative grid sm:grid-cols-3 gap-8">
-            <span className="hidden sm:block draw-line absolute top-7 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-sky via-gold to-sky" />
-            {steps.map(([n, t, d], i) => (
-              <Reveal as="li" key={n} delay={i * 150} className="relative text-center">
-                <span className="relative mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-navy text-gold font-display font-extrabold text-lg shadow-glow ring-4 ring-snow">
-                  {n}
-                </span>
-                <p className="mt-4 font-display font-bold text-navy">{t}</p>
-                <p className="mt-1.5 text-sm text-navy/60 leading-relaxed max-w-[16rem] mx-auto">{d}</p>
+          <FreshRail properties={properties} />
+          <LiveStats properties={properties} />
+
+          <Reveal direction="up" distance={14} className="mt-14">
+            <h2 className="font-display font-bold text-[1.75rem] sm:text-4xl leading-tight text-center text-ink">
+              How can we help you today?
+            </h2>
+            <p className="text-center text-[15px] text-ink/60 mt-2">Pick the option that fits you. It only takes a minute.</p>
+          </Reveal>
+
+          <div className="mt-7 grid gap-4 md:grid-cols-3">
+            {ROLES.map((role, i) => (
+              <Reveal key={role.to} delay={i * 110} distance={26} className="h-full">
+                <RoleCard role={role} />
               </Reveal>
             ))}
-          </ol>
-        </Reveal>
-      </div>
-
-      {/* ── CTA band ─────────────────────────────────────────────── */}
-      <Reveal className="mt-20 mb-16 max-w-5xl mx-auto px-5">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy-dark via-navy to-navy-light text-white p-8 sm:p-12 text-center shadow-glow">
-          <img src="/brand/globe.jpg" alt="" className="absolute right-0 top-0 h-full w-3/5 object-cover object-right opacity-30 hero-kenburns [mask-image:linear-gradient(to_right,transparent,black_60%)]" />
-          <StarShape className="absolute left-[10%] top-[18%] twinkle" size={20} />
-          <StarShape className="absolute right-[12%] top-[30%] twinkle" size={14} color="#FFD36B" />
-          <StarShape className="absolute right-[28%] bottom-[14%] twinkle" size={10} />
-          <div className="relative">
-            <h2 className="font-display font-extrabold text-3xl sm:text-4xl leading-tight">
-              Invest today. <span className="text-gradient-gold">Build your tomorrow.</span>
-            </h2>
-            <p className="mt-3 text-white/70 max-w-md mx-auto text-sm">
-              Talk to the {COMPANY_NAME} team — we'll help you find the right property.
-            </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <a
-                href={whatsappLink(ADMIN_WHATSAPP_NUMBER, "Hi Star Housing, I'd like to know more about your properties.")}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-whatsapp pulse-ring"
-              >
-                Chat on WhatsApp
-              </a>
-              <Link to="/buyer" className="btn-outline-light">View listings</Link>
-            </div>
           </div>
+
+          {(error || (properties && !hasListings)) && (
+          <Reveal delay={120} distance={26} className="mt-4">
+            <Link
+              to="/gallery"
+              className="gallery-card group relative isolate overflow-hidden flex items-center gap-3 sm:gap-4 rounded-3xl bg-ink-dark p-3.5 sm:p-5 text-white shadow-[0_14px_32px_-14px_rgba(6,23,52,0.7)] active:scale-[0.985] transition-transform"
+            >
+              <img
+                src={HERO_IMAGE}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 w-full h-full object-cover object-[80%_88%] opacity-50 transition-transform duration-[1600ms] ease-out group-hover:scale-110"
+                loading="lazy"
+              />
+              <span className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-dark via-ink-dark/85 to-ink-dark/25" aria-hidden="true" />
+              <span className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl border border-white/25 bg-white/5 flex items-center justify-center transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
+                <ImageIcon size={26} strokeWidth={2} />
+              </span>
+              <span className="flex-1 min-w-0">
+                <span className="block font-display font-bold text-[1.2rem] sm:text-[1.3rem] leading-tight text-balance">Browse the property gallery</span>
+                <span className="block text-[13.5px] sm:text-[14px] text-white/70 mt-1">See listings shared by our sellers.</span>
+              </span>
+              <span
+                className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full bg-white/15 flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:bg-white group-hover:text-ink"
+                aria-hidden="true"
+              >
+                <ChevronRight size={22} strokeWidth={2.6} />
+              </span>
+            </Link>
+          </Reveal>
+          )}
+
+          <WhyUs />
+          <HowItWorks />
+          <FinalCta />
+
+          <nav className="mt-14 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[14px] font-semibold text-ink/65" aria-label="Footer">
+            <Link to="/gallery" className="hover:text-ink">Property gallery</Link>
+            <Link to="/seller" className="hover:text-ink">Sell a property</Link>
+            <Link to="/buyer" className="hover:text-ink">Buy a property</Link>
+            <Link to="/mediator" className="hover:text-ink">Join as mediator</Link>
+          </nav>
+          <p className="text-center text-xs text-ink/45 mt-5">
+            © {new Date().getFullYear()} {COMPANY_NAME}. Your Dream • Our Priority.
+          </p>
         </div>
-      </Reveal>
+      </section>
+
+      {/* WhatsApp button — appears once you've scrolled past the hero */}
+      <a
+        href={whatsappLink(ADMIN_WHATSAPP_NUMBER, "Hi Star Housing, I'd like to know more about your properties.")}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat with us on WhatsApp"
+        tabIndex={showChat ? 0 : -1}
+        className={`chat-fab fixed right-4 z-30 w-14 h-14 rounded-full bg-whatsapp text-white flex items-center justify-center shadow-[0_10px_24px_-6px_rgba(37,211,102,0.7)] transition-all duration-500 ${
+          showChat ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"
+        }`}
+        style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
+      >
+        <span className="chat-pulse absolute inset-0 rounded-full bg-whatsapp" aria-hidden="true" />
+        <MessageCircle size={26} className="relative" />
+      </a>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../lib/api";
-import Logo from "../components/Logo";
+import { COLORS } from "../lib/theme";
+import BrandHeader from "../components/wizard/BrandHeader";
+import TextField from "../components/wizard/TextField";
 
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
@@ -15,35 +17,47 @@ export default function AdminLogin() {
     setError("");
     try {
       await adminLogin(password);
-      sessionStorage.setItem("sh_admin_pw", password);
+      sessionStorage.setItem("star_admin_pw", password);
       navigate("/control/dashboard");
-    } catch (err) {
-      setError("Wrong password.");
+    } catch {
+      setError("Wrong password. Check it and try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="max-w-sm mx-auto px-5 pt-24">
-      <div className="card p-7 pop-in">
-        <div className="flex justify-center mb-4"><Logo size={64} /></div>
-        <p className="field-label mb-1 text-center !text-gold-dark">Star Housing • Admin</p>
-        <h1 className="font-display font-extrabold text-2xl text-navy mb-6 text-center">Sign in</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="field-label">Password</label>
-            <input
+    <div className="min-h-screen bg-canvas sm:py-8">
+      <div
+        className="mx-auto max-w-md min-h-[100dvh] sm:min-h-0 bg-surface sm:rounded-[2rem] sm:ring-8 sm:ring-[#E8F0FB] sm:shadow-[0_28px_60px_-24px_rgba(11,37,89,0.35)]"
+        style={{ "--accent": COLORS.steel }}
+      >
+        <BrandHeader color={COLORS.steel} className="sm:rounded-t-[2rem]" />
+        <form onSubmit={handleSubmit} className="px-5 pt-8 pb-10">
+          <p className="text-[12px] font-bold uppercase tracking-[0.14em]" style={{ color: COLORS.steel }}>
+            Admin
+          </p>
+          <h1 className="mt-2 font-display font-bold text-[1.6rem] leading-tight text-ink">Sign in</h1>
+          <p className="mt-2 text-sm text-ink/55">Enter the admin password to open the dashboard.</p>
+
+          <div className="mt-6">
+            <TextField
+              label="Password"
+              required
               type="password"
-              className="field-input"
+              autoComplete="current-password"
+              autoFocus
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoFocus
-              required
+              error={error}
             />
           </div>
-          {error && <p className="text-sm text-danger">{error}</p>}
-          <button type="submit" disabled={loading} className="btn-primary w-full">
+
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className="mt-6 w-full h-14 rounded-full bg-ink text-white text-[12px] font-bold uppercase tracking-[0.14em] transition active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
+          >
             {loading ? "Checking…" : "Sign in"}
           </button>
         </form>

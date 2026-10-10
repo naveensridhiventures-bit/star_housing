@@ -1,6 +1,118 @@
-# Star Housing Properties India Pvt Ltd
+# Star Housing
 
-**Your dream • Our priority.**
+## v15 Quick call notes (admin, hidden)
+
+Open `/quick` on your phone: save a number, name and voice note after each call, then listen and update the CRM later.
+Needs the updated `apps-script/Code.gs` (see CHANGES.md for the 3 steps).
+
+## v11 Premium Gallery (public)
+
+Budget pills, curated shelves, stats strip, recently viewed, compare saved,
+EMI calculator, trust highlights, Book a visit and similar properties. See CHANGES.md.
+
+## v10 Pipeline Studio (admin)
+
+Every CRM has a **Cards / Board** switch: drag leads between pipeline stages
+(or use the stage dropdown on a phone). **Ctrl+K** opens a search-and-commands
+palette that finds any lead and jumps straight to it. The Overview adds a
+**Deal forecast** (expected commission), **Recent activity**, **Data health**
+(duplicates, missing phones) and **CSV export**. See `CHANGES.md`.
+
+## v9 Command Center (admin)
+
+The dashboard now opens on **Overview** (KPIs, intake chart, pipelines,
+demand vs supply), with a **Today** follow-up queue and a **Matches** tab
+that pairs buyers with properties. Every lead card shows a Hot / Warm / Cold
+score, a WhatsApp template menu and a sort option. See `CHANGES.md` for the
+full list.
+
+## Gallery presentation fixes
+
+- **Exact price on the gallery** — the price badge now prefers the seller's
+  typed-in exact price (properly comma-formatted, e.g. ₹50,00,000) over the
+  admin-only budget figure, which in turn beats the plain price-range text.
+- **Custom gallery title** — a new "Gallery listing title" field on each
+  seller lead lets you write something creative ("Sun-drenched 3BHK with a
+  private terrace garden") instead of the plain auto-generated "Type in
+  Area" title. Leave it blank to keep the auto-generated one.
+- **Seller's remark now shown separately** — instead of being squeezed into
+  the small attribute grid, it gets its own highlighted quote-style callout
+  (gold accent border, italic text, quote icon) on both the gallery card
+  and the single-property page, and its own styled box in the Customer PDF.
+
+## Custom pipelines, delete, and admin-only sharing
+
+- **Each role now has its own pipeline** instead of one shared New/Contacted/
+  Closed/Dropped set:
+  - **Seller**: New → Contacted → Direct Owner → Agent
+  - **Buyer**: New → Contacted → 20% to 50% → 50% to 70% → 70% to 100% → Worthless
+  - **Mediator**: has *two* independent pipelines — New → Contacted →
+    Pending → Visited, plus a separate "Lead quality" track (Worth / Ok /
+    Not worth) shown and filtered separately.
+- **Road width** is now free-text instead of fixed options; **Exact price**
+  added as a typeable field alongside the price-range selector.
+- **Delete** — every lead now has a 🗑 Delete button in its detail panel
+  (Seller, Buyer, and Mediator). Click once to arm it ("Confirm delete?"),
+  click again within a few seconds to actually delete — it resets on its
+  own if you don't confirm.
+- **Sharing a property link is admin-only now** — the share button was
+  removed from the public gallery entirely. Instead, once you've shared a
+  seller lead to the gallery, a **"🔗 Copy property link"** button appears
+  in that lead's detail panel so you control who gets sent the link.
+
+## Two PDF types + shareable property links
+
+- **Two PDF buttons on every seller lead**: **"📄 Admin PDF"** (the full
+  internal report — owner name, real phone as a clickable WhatsApp link,
+  exact address, map link) and **"📤 Customer PDF"** (buyer-safe — no owner
+  name, no real phone, no exact address; the mediator's own number shows
+  as the contact instead, both as a clickable WhatsApp button and printed
+  as plain text). The Customer PDF respects the same per-field visibility
+  checklist as "Share on gallery," and works without needing to actually
+  publish the listing.
+- **Shareable per-property links** — every gallery card has a share icon;
+  tap it to open your device's share sheet (or copy the link if sharing
+  isn't available) for a direct link to just that one property. Opening
+  the link shows a focused single-property page with the full photo
+  carousel, details, and WhatsApp button; a "← All listings" link (and the
+  browser's own back button) returns to the full gallery.
+
+## Full property owner details form
+
+- The Seller form now collects a full property questionnaire — owner type,
+  photos status, property type/age/status, building type, land area,
+  built-up area, frontage, road width, facing, usage, patta/approval,
+  approval status, parking, rental status, loan status, expected price,
+  timeline, and free-text remarks. Only name, phone, owner type, location,
+  property type, status, price, and timeline are required — everything
+  else is optional so the form stays completable.
+- All of these fields are editable in the Seller CRM with the same
+  dropdown options as the public form, and automatically included in the
+  seller's PDF report.
+- **Per-listing gallery visibility control** — when sharing a lead to the
+  gallery, there's a checklist of every detail-field that has a value on
+  that lead ("Property age", "Facing", "Loan status," etc.), each with its
+  own checkbox. Uncheck anything you don't want a buyer to see for that
+  specific listing; the choice is remembered and pre-filled next time you
+  update that listing. Owner name, phone, ownership type, and exact
+  address are never shown on the gallery regardless of this setting.
+
+## Recent redesign
+
+- **No more site-wide nav on any page** — the header (How It Works / Categories
+  / Contact / Get Started) and bottom nav bar are gone everywhere. Every page
+  already has its own in-page branding, so this was redundant chrome.
+- **Seller/Buyer/Mediator forms redesigned** — each field is now a
+  numbered step with its own icon per option (property type, location,
+  status, etc.), and the name/phone inputs have leading icons too, matching
+  a cleaner, more premium look.
+- **Gallery attributes** — any custom field you tag on a seller lead
+  (Facing, Furnishing, Amenity, etc.) now gets included when you "Share on
+  gallery" and displays as a small attribute grid on the public listing —
+  still never the owner's phone or exact address.
+- **Download brochure** — each gallery card has a download icon that
+  generates a buyer-safe PDF brochure (photos, type, area, price, sqft,
+  attributes) — no phone number, no exact address, ever.
 
 A PWA for your Instagram property-video workflow: **Mediator**, **Seller**, and
 **Buyer** each fill their own form; everything is stored in a Google Sheet;
@@ -36,8 +148,8 @@ clicking buttons. Do them in order.
    - Click **Deploy**, authorize again if asked.
 5. Copy the **Web app URL** it gives you (ends in `/exec`). You'll paste this
    into the app's config in step 3 below.
-6. Go back to the spreadsheet — you'll see three tabs appear automatically
-   the first time each is used: `Mediators`, `Sellers`, `Properties`.
+6. Go back to the spreadsheet — you'll see tabs appear automatically the
+   first time each is used: `Mediators`, `Sellers`, `Buyers`, `Properties`.
 
 > Whenever you edit `Code.gs` later, you must click **Deploy → Manage
 > deployments → Edit (pencil) → New version → Deploy** for changes to go live.
@@ -63,6 +175,7 @@ export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXX/exec";
 export const CLOUDINARY_CLOUD_NAME = "your-cloud-name";
 export const CLOUDINARY_UPLOAD_PRESET = "your-preset-name";
 export const ADMIN_WHATSAPP_NUMBER = "919876543210"; // your number, no + or spaces
+export const MEDIATOR_WHATSAPP_NUMBER = "918838660663"; // mediator's number — sellers message this directly
 ```
 
 ---
@@ -102,15 +215,92 @@ that's the link customers, mediators, and sellers use.
 ## 6. Using the app
 
 ### Public pages (linked from the home screen)
-- `/mediator` — mediator submits a lead with property + Insta reference + photo
-- `/seller` — seller lists their property
-- `/buyer` — buyer browses properties **you've** published
+- `/mediator` — mediator/agent/builder/developer registers on the network (profession, area,
+  category, experience, deal type, genuine-leads pledge)
+- `/seller` — seller registers their property (type, location, status, expected price,
+  ownership, timeline)
+- `/buyer` — buyer registers what they're looking for (property type, purpose, budget,
+  preferred location, loan requirement, timeline)
+
+- **Seller** forms end with a **"Message the mediator on WhatsApp"** button that opens a
+  pre-filled WhatsApp chat straight to the mediator's number (`MEDIATOR_WHATSAPP_NUMBER`
+  in `config.js`), so only sellers can message the mediator directly.
+- **Buyer** and **Mediator** forms only **submit a report** — everything is saved to the
+  Google Sheet, but there's no WhatsApp button; the admin follows up from the CRM instead.
 
 ### Hidden admin pages (not linked anywhere in the UI — bookmark them)
 - `/control` — admin login (the password you set in step 1.3)
-- `/control/dashboard` — view mediator & seller leads, add private remarks,
-  change status, call/WhatsApp any lead directly, and publish/edit/remove
-  the listings buyers see
+- `/control/dashboard` — **three separate CRMs** (Seller CRM, Buyer CRM, Mediator CRM),
+  each color-coded, with live stat/status pills, search, an **e-commerce-style
+  advanced filter panel** — filter by area/locality, budget range, property
+  size (sqft), and any **custom field** you've tagged onto leads (add any
+  attribute you need, like "Facing" or "Furnishing", from a lead's detail
+  panel — it automatically becomes a checkbox facet with counts across all
+  leads, so you can narrow 1,000 leads down to one in a few clicks), per-lead
+  status pipeline (New → Contacted → In progress → Closed → Dropped), a
+  5-star priority rating, a next-follow-up date picker (flagged as
+  **Overdue** once it passes), and a full-detail **View & edit** panel per
+  lead where the admin can edit every submitted field (name, phone, and all
+  the role-specific details) plus admin-only metadata (area, budget, sqft,
+  custom fields) used for the filters — none of this overwrites the dated
+  **remarks history** (every note you add is kept, never overwritten, and
+  the latest one shows right on the lead card for quick reference), one-tap
+  call/WhatsApp, and a **Download report** button that exports the currently
+  filtered leads as a polished PDF with each lead's full remarks history —
+  plus a separate "Published listings" tab if you want to curate properties
+- **New field visit lead (Seller CRM only)** — a **"New field visit"** button
+  sits right in the Seller CRM header. Tap it, take a photo on-site, and it
+  creates a **brand-new seller lead** immediately — capturing GPS location,
+  reverse-geocoding the address, and uploading the photo — all before you've
+  even spoken details with the customer. That new lead's card shows the
+  photo as a banner at the top with "Field visit" and the date/time, so it's
+  instantly recognizable in the list. Fill in the rest of the details (name,
+  property type, etc.) later from its "View & edit full details" panel.
+  You can also log additional visits to any existing seller lead from
+  inside its detail panel's "Site visits" section — every visit stays in
+  the history, nothing gets overwritten.
+- Errors from any admin action (saving details, adding a remark, logging a
+  visit) now show directly in the panel instead of failing silently — if
+  something's wrong (e.g. the Apps Script deployment needs redeploying, or
+  its "Who has access" isn't set to "Anyone"), you'll see a clear message.
+- **Admin edits use the same dropdown options as the public forms** — no
+  more free-text drift from what a seller/buyer/mediator could actually
+  submit.
+- **PDF downloads**: the bulk "Download report" button already exports
+  whatever's currently filtered (search, status, area, budget, sqft, any
+  facet) as one PDF; each lead's detail panel now also has its own **"📄
+  PDF"** button for a single-lead report.
+- **Hidden field-visit page** (`/control/field-visit`, linked from the
+  Command Center header) — a focused, mobile-first page for capturing a
+  new lead entirely on-site: property owner name, phone, area, a camera
+  photo, and live GPS location with an editable reverse-geocoded address.
+  Submitting shows a success popup with the exact date/time, then the new
+  lead appears in the Seller CRM with its photo, pipeline, and remarks
+  ready to go.
+- **Hidden buyer gallery** (`/gallery`, linked from the Command Center
+  header) — an e-commerce-style public grid of listings. From any seller
+  lead's detail panel, click **"Share on gallery"** to publish a
+  buyer-safe version (photo, property type, area, price) — the owner's
+  phone number and exact address are deliberately never included. Editing
+  the lead and clicking "Update on gallery" again keeps the same listing
+  in sync rather than duplicating it.
+- **Property photos (up to 4 per seller lead)** — the detail panel shows a
+  4-slot photo grid instead of a single photo. Add or remove any of the
+  four independently; the first one is used as the cover image everywhere
+  (gallery card, PDF).
+- **Gallery carousel with motion** — property cards on `/gallery` auto-rotate
+  through all of a listing's photos every few seconds with a smooth
+  cross-fade, dot indicators, and hover arrows to flip through manually.
+  Size (sqft) now shows alongside area and price. Still never shows the
+  owner's name, phone, or exact address/map — only what "Share on gallery"
+  explicitly published.
+- **Seller PDF now includes**: all of that lead's photos embedded directly
+  in the report, the owner's phone number as a **clickable link that opens
+  WhatsApp**, and — when a site visit captured GPS coordinates or an
+  address — a **clickable "View exact location on map"** link plus the
+  address as plain text, so the full picture (photos, contact, exact
+  location) is in the report even though none of it appears on the public
+  gallery.
 
 Since every submission is saved instantly to your Google Sheet, you always
 have the full record even before you check WhatsApp — this is what answers
@@ -149,11 +339,7 @@ src/
     cloudinary.js    — image upload
     whatsapp.js      — wa.me / tel: link builders
   components/
-    Logo.jsx         — Star Housing logo mark + star
-    RoleBadge.jsx    — rotating badge used on role cards
-    Reveal.jsx       — scroll-reveal animation wrapper
-    PageHero.jsx     — branded banner for inner pages
-    Footer.jsx
+    Seal.jsx         — the stamp/seal signature graphic
     Header.jsx
     ImageUploader.jsx
     admin/
@@ -169,3 +355,26 @@ src/
 apps-script/
   Code.gs            — paste into Google Sheets → Extensions → Apps Script
 ```
+
+## Performance
+
+The backend now skips two things it used to do on every single request:
+locking and column-migration checks were running even for read-only actions
+like logging in or loading the lead list. Now only actions that actually
+write to a sheet (adding/updating a lead, remarks, etc.) take the lock and
+pay that cost — logging in and loading lists should feel noticeably
+faster. One honest caveat: Google Apps Script itself has a "cold start" of
+a few seconds after it's been idle for a while, which no amount of
+code-level optimization removes — if the very first request after a gap
+feels slow but everything after it is snappy, that's this, not a bug.
+
+## Carousel & manual location
+
+- Seller lead cards in the CRM now show the same sliding photo carousel as
+  the public gallery — if a lead has multiple photos, the card auto-advances
+  through them right in the list, not just a single static banner.
+- In a seller lead's detail panel, under "Location," you can type/paste the
+  exact address directly and paste a Google Maps share link, without
+  needing to physically be on-site with GPS. The seller PDF's map link
+  prefers the pasted Maps link first, falling back to GPS coordinates from
+  a site visit, then the typed address.

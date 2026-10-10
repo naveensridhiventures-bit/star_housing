@@ -14,6 +14,10 @@ export const CLOUDINARY_UPLOAD_PRESET = "PASTE_YOUR_UNSIGNED_UPLOAD_PRESET";
 //    e.g. 919876543210 for an Indian number
 export const ADMIN_WHATSAPP_NUMBER = "91XXXXXXXXXX";
 
+// 4. The number a SELLER's "Message us" button sends to. Same format.
+//    Leave as is to use the admin number above.
+export const MEDIATOR_WHATSAPP_NUMBER = ADMIN_WHATSAPP_NUMBER;
+
 // Brand
 export const APP_NAME = "Star Housing";
 export const COMPANY_NAME = "Star Housing Properties India Pvt Ltd";

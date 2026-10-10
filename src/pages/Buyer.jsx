@@ -1,142 +1,125 @@
-import { useEffect, useMemo, useState } from "react";
-import RoleBadge from "../components/RoleBadge";
-import PageHero from "../components/PageHero";
-import { listPublicProperties } from "../lib/api";
-import { whatsappLink, callLink } from "../lib/whatsapp";
-import { ADMIN_WHATSAPP_NUMBER } from "../lib/config";
+import Wizard from "../components/wizard/Wizard";
+import ChoiceGroup from "../components/wizard/ChoiceGroup";
+import TextField, { PhoneField } from "../components/wizard/TextField";
+import { isValidPhone } from "../lib/validate";
+import { COLORS } from "../lib/theme";
+import { addBuyerLead } from "../lib/api";
 
-const ACCENT = "#EA580C";
+const PROPERTY_TYPES = ["Home / Independent House", "Apartment / Flat", "Villa", "Plot / Land", "Hotel", "Restaurant", "Saloon", "Shop / Retail", "Office / Commercial Space"];
+const PURPOSE = ["Own Use", "Investment"];
+const BUDGET = ["Below ₹30 Lakhs", "₹30–50 Lakhs", "₹50–75 Lakhs", "₹75 Lakhs–₹1 Crore", "Above ₹1 Crore"];
+const LOCATIONS = ["North Chennai", "Central Chennai", "South Chennai", "No Specific Preference"];
+const YES_NO = ["Yes", "No"];
+const TIMELINE = ["Immediately", "Within 1 Month", "Within 3 Months", "Just Exploring"];
+
+const initialForm = {
+  name: "",
+  phone: "",
+  propertyType: "",
+  purpose: "",
+  budget: "",
+  preferredLocation: "",
+  loanRequirement: "",
+  timeline: "",
+};
+
+const landing = {
+  title: "Looking to buy a property?",
+  subtitle: "Tell us what you're looking for.",
+  note: "Takes about a minute. We'll contact you on WhatsApp with matching properties.",
+  cta: "Get started",
+  items: [
+    { label: "Buyer", text: "Your name and WhatsApp number", color: COLORS.steel },
+    { label: "Property", text: "The type of property and where", color: COLORS.teal },
+    { label: "Budget", text: "Your budget, loan and timeline", color: COLORS.coral },
+  ],
+};
+
+const short = (t) => (t ? t.split(" / ")[0] : "");
+
+const steps = [
+  {
+    label: "Personal details",
+    title: "Who should we contact?",
+    hint: "We'll reach out on WhatsApp.",
+    valid: (f) => f.name.trim() && isValidPhone(f.phone),
+    render: (f, set) => (
+      <>
+        <TextField label="Full name" required valid={f.name.trim().length > 1} autoComplete="name" placeholder="Your name" value={f.name} onChange={(e) => set("name", e.target.value)} />
+        <PhoneField value={f.phone} onChange={(v) => set("phone", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Property type",
+    title: "What property are you looking for?",
+    auto: true,
+    valid: (f) => f.propertyType,
+    render: (f, set) => <ChoiceGroup options={PROPERTY_TYPES} value={f.propertyType} onChange={(v) => set("propertyType", v)} required />,
+  },
+  {
+    label: "Purpose & budget",
+    title: "Purpose and budget",
+    valid: (f) => f.purpose && f.budget,
+    render: (f, set) => (
+      <>
+        <ChoiceGroup label="Purpose" required options={PURPOSE} value={f.purpose} onChange={(v) => set("purpose", v)} />
+        <ChoiceGroup label="Budget" required options={BUDGET} value={f.budget} onChange={(v) => set("budget", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Location & loan",
+    title: "Where, and will you need a loan?",
+    valid: (f) => f.preferredLocation && f.loanRequirement,
+    render: (f, set) => (
+      <>
+        <ChoiceGroup label="Preferred location" required options={LOCATIONS} value={f.preferredLocation} onChange={(v) => set("preferredLocation", v)} />
+        <ChoiceGroup label="Loan requirement" required options={YES_NO} value={f.loanRequirement} onChange={(v) => set("loanRequirement", v)} />
+      </>
+    ),
+  },
+  {
+    label: "Timeline",
+    title: "When are you planning to buy?",
+    auto: true,
+    valid: (f) => f.timeline,
+    render: (f, set) => <ChoiceGroup options={TIMELINE} value={f.timeline} onChange={(v) => set("timeline", v)} required />,
+  },
+];
 
 export default function Buyer() {
-  const [properties, setProperties] = useState(null);
-  const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("All");
-
-  useEffect(() => {
-    listPublicProperties()
-      .then(setProperties)
-      .catch((err) => setError(err.message || "Could not load listings"));
-  }, []);
-
-  const types = useMemo(
-    () => ["All", ...Array.from(new Set((properties || []).map((p) => p.type).filter(Boolean)))],
-    [properties]
-  );
-  const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return (properties || []).filter(
-      (p) =>
-        (typeFilter === "All" || p.type === typeFilter) &&
-        (!q || `${p.title} ${p.location} ${p.description || ""}`.toLowerCase().includes(q))
-    );
-  }, [properties, query, typeFilter]);
-
   return (
-    <>
-      <PageHero label="Buyer" eyebrow="Browse listings" title="Available properties" subtitle="Verified properties we are currently mediating." accent={ACCENT} />
-      <div className="max-w-5xl mx-auto px-5 pb-20 -mt-10 relative z-10">
-
-      {properties?.length > 0 && (
-        <div className="card p-4 mb-6 flex flex-col sm:flex-row gap-3 sm:items-center">
-          <input
-            className="field-input sm:max-w-xs !py-2.5"
-            placeholder="Search title or location…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <div className="flex gap-2 flex-wrap">
-            {types.map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTypeFilter(t)}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition ${
-                  typeFilter === t ? "bg-navy text-white shadow-glow" : "bg-snow text-navy/60 hover:text-navy hover:bg-sky-soft"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-          <span className="sm:ml-auto text-xs font-semibold text-navy/50">{visible.length} found</span>
-        </div>
-      )}
-
-      {error && (
-        <div className="card p-6 text-center text-danger text-sm">{error}</div>
-      )}
-
-      {!error && properties === null && (
-        <div className="grid sm:grid-cols-2 gap-5">
-          {[1, 2].map((i) => (
-            <div key={i} className="card h-64 animate-pulse bg-navy/5" />
-          ))}
-        </div>
-      )}
-
-      {properties?.length === 0 && (
-        <div className="card p-10 text-center">
-          <p className="text-navy/60">
-            Nothing listed yet — check back soon, admin adds verified properties here.
-          </p>
-        </div>
-      )}
-
-      {properties?.length > 0 && visible.length === 0 && (
-        <div className="card p-10 text-center text-navy/60">No properties match your search.</div>
-      )}
-
-      {visible.length > 0 && (
-        <div className="grid sm:grid-cols-2 gap-5">
-          {visible.map((p, i) => (
-            <article key={p.id} style={{ animationDelay: `${Math.min(i, 6) * 80}ms` }} className="card group overflow-hidden flex flex-col hover:-translate-y-1.5 hover:shadow-glow transition-all duration-500 fade-up">
-              <div className="relative aspect-[4/3] bg-navy/5 overflow-hidden">
-                <span className="absolute left-3 bottom-3 z-10 px-3 py-1.5 rounded-full bg-gradient-to-r from-gold-light to-gold text-navy-dark text-sm font-extrabold shadow-gold">{p.price}</span>
-                <span className="absolute right-3 top-3 z-10 px-2.5 py-1 rounded-full bg-navy/80 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider">★ Verified</span>
-                {p.imageUrl ? (
-                  <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-navy/30 text-4xl bg-gradient-to-br from-sky-soft to-snow-dim">
-                    🏠
-                  </div>
-                )}
-              </div>
-              <div className="p-5 flex flex-col gap-2 flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <h2 className="font-display font-semibold text-lg text-navy leading-snug">
-                    {p.title}
-                  </h2>
-                  <span className="text-[10px] font-mono uppercase tracking-wide px-2 py-1 rounded-full bg-buyer/10 text-buyer shrink-0">
-                    {p.type || "Property"}
-                  </span>
-                </div>
-                <p className="text-sm text-navy/60 font-medium">📍 {p.location}</p>
-                {p.description && (
-                  <p className="text-sm text-navy/60 leading-relaxed line-clamp-3">{p.description}</p>
-                )}
-                <div className="mt-auto pt-3 flex gap-2">
-                  <a
-                    href={whatsappLink(
-                      p.contactPhone || ADMIN_WHATSAPP_NUMBER,
-                      `Hi, I'm interested in ${p.title} (${p.location})`
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-whatsapp flex-1 !py-2.5 text-sm"
-                  >
-                    WhatsApp
-                  </a>
-                  <a href={callLink(p.contactPhone || ADMIN_WHATSAPP_NUMBER)} className="btn-ghost !py-2.5 !px-4 text-sm">
-                    Call
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </div>
-    </>
+    <Wizard
+      role="Buyer"
+      initialForm={initialForm}
+      landing={landing}
+      steps={steps}
+      chips={(f) => [f.name.trim() && f.name.trim().split(" ")[0], short(f.propertyType), f.purpose, f.budget, f.preferredLocation && f.preferredLocation.replace(" Chennai", "")]}
+      reviewTitle="Review your requirements"
+      reviewNote="Check everything looks right. Tap any row to change it."
+      reviewRows={(f) => [
+        { label: "Name", value: f.name, step: 1 },
+        { label: "Mobile", value: f.phone, step: 1 },
+        { label: "Property", value: f.propertyType, step: 2 },
+        { label: "Purpose", value: f.purpose, step: 3 },
+        { label: "Budget", value: f.budget, step: 3 },
+        { label: "Location", value: f.preferredLocation, step: 4 },
+        { label: "Loan", value: f.loanRequirement, step: 4 },
+        { label: "Timeline", value: f.timeline, step: 5 },
+      ]}
+      submit={(f) => addBuyerLead({ ...f, name: f.name.trim() })}
+      submitLabel="Submit requirement"
+      success={{
+        title: "We have your requirement",
+        text: (f) => `Thanks, ${f.name.trim()}. Our team will review your requirements and contact you with matching properties.`,
+        next: [
+          { title: "Our team reads your requirements", text: "We look at your budget, area and timeline." },
+          { title: "We match properties to you", text: "You'll hear from us on WhatsApp with options that fit." },
+          { title: "Visit and decide", text: "Book a visit to the ones you like, with a real person to help." },
+        ],
+        againLabel: "Register another",
+      }}
+    />
   );
 }
