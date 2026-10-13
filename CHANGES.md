@@ -1,3 +1,7 @@
+# v5e — New Apps Script URL (2026-10-13)
+
+Only `src/lib/config.js` changed: APPS_SCRIPT_URL now ends …yDEA.
+
 # v5d — New Apps Script URL (2026-10-13)
 
 Only `src/lib/config.js` changed: APPS_SCRIPT_URL now ends …ltJeA.
